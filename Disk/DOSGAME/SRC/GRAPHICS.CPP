@@ -7,6 +7,7 @@
 #include "palette.h"
 #include "timer.h"
 #include "adlib.h"
+#include "player.h"
 
 void main()
 {
@@ -28,13 +29,17 @@ void main()
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
 
-	screen.draw_background(background.get_buffer());
-	for (int i = 0; i < 20; i++)
+	Player player = Player("IMAGES\\PLAYER.SPR");
+
+	while (1 == 1)
 	{
-		grass.draw(screen, i * 16, 200 - 16);
+		screen.draw_background(background.get_buffer());
+		for (int i = 0; i < 20; i++)
+		{
+			grass.draw(screen, i * 16, 200 - 16);
+		}
+		player.draw(screen);
+
+		screen.draw_screen_buffer();
 	}
-
-	screen.draw_screen_buffer();
-
-	sleep(1);
 }
