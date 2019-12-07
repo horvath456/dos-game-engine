@@ -8,12 +8,13 @@
 #include "timer.h"
 #include "adlib.h"
 #include "player.h"
+#include "keyboard.h"
 
 void main()
 {
 	Screen screen = Screen();
-
 	Timer timer = Timer(100);
+	Keyboard keyboard = Keyboard();
 
 	if (Adlib::check_if_adlib_present())
 	{
@@ -33,6 +34,11 @@ void main()
 
 	while (1 == 1)
 	{
+		if(keyboard.check_if_pressed(1)) break;
+
+		if(keyboard.check_if_pressed(75)) player.move(-1, 0);
+		if(keyboard.check_if_pressed(77)) player.move(1, 0);
+
 		screen.draw_background(background.get_buffer());
 		for (int i = 0; i < 20; i++)
 		{

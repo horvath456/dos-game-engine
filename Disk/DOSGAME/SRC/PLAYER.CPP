@@ -16,3 +16,9 @@ void Player::draw(Screen &screen)
 {
     drawobj.draw(screen, x, y);
 }
+
+void Player::move(int delta_x, int delta_y)
+{
+    x += delta_x;
+    y += delta_y;
+}

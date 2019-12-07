@@ -33,7 +33,7 @@ void Timer::set_timer(int frate)
     clock_ticks = 0;
     counter = 0x1234DD / frate;
     old_handler = getvect(TIMEINT);
-    setvect(TIMEINT, Timer::new_handler);
+    setvect(TIMEINT, new_handler);
     outport(0x43, 0x34);
     outport(0x40, counter % 256);
     outport(0x40, counter / 256);
