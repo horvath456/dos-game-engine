@@ -5,15 +5,17 @@ const path = require('path');
 
 const writeFile = promisify(fs.writeFile);
 
+console.log("USAGE: node convert.js INPUT_PATH SPRITE_OUT_PATH PALETTE_OUT_PATH (IMAGE_FILE)*");
+
 (async () => {
     try {
         let outputs = [];
         let palette = [];
 
-        const args = process.argv.slice(2);
+        const args = process.argv.slice(5);
 
         for (const filename of args) {
-            const { data, width, height } = await pixels(filename);
+            const { data, width, height } = await pixels(path.join(process.argv[2], filename));
 
             let output = new Uint8Array(4 + height * width);
 
@@ -47,7 +49,7 @@ const writeFile = promisify(fs.writeFile);
         }
 
         for (const entry of outputs) {
-            await writeFile(entry.name, entry.data);
+            await writeFile(path.join(process.argv[3], entry.name), entry.data);
         }
 
         const rawPalette = new Uint8Array(256 * 3 + 1).fill(0xFF);
@@ -62,7 +64,7 @@ const writeFile = promisify(fs.writeFile);
             rawPalette[i * 3 + 2] = b;
         }
 
-        await writeFile('PALETTE.DAT', rawPalette);
+        await writeFile(path.join(process.argv[4], 'PALETTE.DAT'), rawPalette);
 
     } catch (e) {
         console.error(e);
