@@ -5,6 +5,7 @@
 
 Timer::Timer(unsigned int freq)
 {
+    frequency = freq;
     Timer::set_timer(freq);
 }
 
@@ -52,10 +53,15 @@ unsigned long long Timer::get_time()
     return game_time;
 }
 
+double Timer::get_delta_time(unsigned long long t)
+{
+    return (double)((double)(game_time - t) / (double)100);
+}
+
 void Timer::delay(unsigned long int ms)
 {
     unsigned long long start_timer = get_time();
-    while (get_time() - start_timer < ms)
+    while (get_delta_time(start_timer) < ms)
     {
     }
 }
@@ -63,3 +69,4 @@ void Timer::delay(unsigned long int ms)
 void far interrupt (*Timer::old_handler)(...);
 long int Timer::clock_ticks, Timer::counter;
 unsigned long long Timer::game_time;
+unsigned int Timer::frequency;

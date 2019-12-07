@@ -10,10 +10,12 @@
 #include "player.h"
 #include "keyboard.h"
 
+#define SPEED 4
+
 void main()
 {
 	Screen screen = Screen();
-	Timer timer = Timer(100);
+	Timer timer = Timer(240);
 	Keyboard keyboard = Keyboard();
 
 	if (Adlib::check_if_adlib_present())
@@ -32,12 +34,20 @@ void main()
 
 	Player player = Player("IMAGES\\PLAYER.SPR");
 
+	unsigned long long game_time = timer.get_time();
+	double delta_time = 0;
+
 	while (1 == 1)
 	{
-		if(keyboard.check_if_pressed(1)) break;
+		if (keyboard.check_if_pressed(1))
+			break;
 
-		if(keyboard.check_if_pressed(75)) player.move(-1, 0);
-		if(keyboard.check_if_pressed(77)) player.move(1, 0);
+		if (keyboard.check_if_pressed(75))
+			player.target_velocity.x = -1 * SPEED;
+		if (keyboard.check_if_pressed(77))
+			player.target_velocity.x = 1 * SPEED;
+
+		player.update_physics(delta_time);
 
 		screen.draw_background(background.get_buffer());
 		for (int i = 0; i < 20; i++)
@@ -47,5 +57,8 @@ void main()
 		player.draw(screen);
 
 		screen.draw_screen_buffer();
+
+		delta_time = timer.get_delta_time(game_time) * 10;
+		game_time = timer.get_time();
 	}
 }

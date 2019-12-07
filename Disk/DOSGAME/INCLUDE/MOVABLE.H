@@ -10,41 +10,49 @@
 #define TRUE 1
 #define FALSE 0
 
+#define GRAVITY 1
+
 class Movable
 {
 public:
+    Movable()
+    {
+        gravity = Vector2D(0, GRAVITY);
+    }
+
     void update_physics(double delta_time)
     {
         old_pos = pos;
-        old_speed = speed;
+        old_velocity = velocity;
 
         was_on_ground = on_ground;
         pushed_right_wall = pushes_right_wall;
         pushed_left_wall = pushes_left_wall;
         was_at_ceiling = at_ceiling;
 
-        pos.x += speed.x * delta_time;
-        pos.y += speed.y * delta_time;
+        velocity = velocity + gravity * delta_time;
+        velocity.x = target_velocity.x;
 
-        if (pos.y < 0.0f)
-        {
-            pos.y = 0.0f;
-            on_ground = TRUE;
-        }
-        else
-            on_ground = FALSE;
+        movement(Vector2D(velocity.x * delta_time, (double)0));
+        movement(Vector2D((double)0, velocity.y * delta_time));
 
-        aabb.center.x = pos.x + aabb_offset.x;
-        aabb.center.y = pos.y + aabb_offset.y;
+        on_ground = pos.y <= 20;
+
+        aabb.center = pos + aabb_offset;
+
+        target_velocity = Vector2D();
     }
 
-    int get_pos_x() { return (int)fabs(pos.x); }
-    int get_pos_y() { return (int)fabs(pos.y); }
+    int get_pos_x() { return (int)ceil(pos.x); }
+    int get_pos_y() { return (int)ceil(pos.y); }
 
     Vector2D old_pos;
     Vector2D pos;
-    Vector2D old_speed;
-    Vector2D speed;
+    Vector2D old_velocity;
+    Vector2D velocity;
+    Vector2D gravity;
+
+    Vector2D target_velocity;
 
     AABB aabb;
     Vector2D aabb_offset;
@@ -58,8 +66,16 @@ public:
     int was_on_ground;
     int on_ground;
 
+    int grounded;
+
     int was_at_ceiling;
     int at_ceiling;
+
+private:
+    void movement(Vector2D move)
+    {
+        pos = pos + move;
+    }
 };
 
 #endif

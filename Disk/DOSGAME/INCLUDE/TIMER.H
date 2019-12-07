@@ -15,6 +15,7 @@ public:
     ~Timer();
 
     unsigned long long get_time();
+    double get_delta_time(unsigned long long d);
 
     void delay(unsigned long int ms);
 
@@ -22,6 +23,7 @@ private:
     static void far interrupt (*old_handler)(...);
     static long int clock_ticks, counter;
     static unsigned long long game_time;
+    static unsigned int frequency;
 
     static void far interrupt new_handler(...);
 

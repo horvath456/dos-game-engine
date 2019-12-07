@@ -7,20 +7,14 @@
 #include "drawobj.h"
 #include "movable.h"
 
-class Player : Movable
+class Player : public Movable
 {
 public:
     Player(const char *filename);
 
     void draw(Screen &screen);
 
-    void move(int delta_x, int delta_y);
-
 private:
-    long int x;
-    long int y;
-    long int vx;
-    long int vy;
     DrawObject drawobj;
 };
 

@@ -17,17 +17,66 @@ Screen::~Screen()
 
 void Screen::draw_screen_buffer()
 {
-    fmemcpy(screen_buffer, screen_memory, 64000);
+    unsigned char far *src = screen_buffer;
+    unsigned char far *dst = screen_memory;
+    asm {
+        push ds
+        push es
+        push cx
+        push si 
+        push di
+        lds si, [src]
+        les di, [dst]
+        mov cx, 32000
+        rep movsw
+        pop di
+        pop si
+        pop cx
+        pop es
+        pop ds
+    }
 }
 
 void Screen::clear_screen_buffer()
 {
-    fmemset(screen_buffer, 64000, 0);
+    unsigned char far *dst = screen_buffer;
+    asm {
+        push ds
+        push es
+        push cx
+        push si 
+        push di
+        les di, [dst]
+        mov cx, 32000
+        xor ax, ax
+        rep stosw
+        pop di
+        pop si
+        pop cx
+        pop es
+        pop ds
+    }
 }
 
-void Screen::draw_background(unsigned char far* buf)
+void Screen::draw_background(unsigned char far *buf)
 {
-    fmemcpy(buf, screen_buffer, 64000);
+    unsigned char far *dst = screen_buffer;
+    asm {
+        push ds
+        push es
+        push cx
+        push si 
+        push di
+        lds si, [buf]
+        les di, [dst]
+        mov cx, 32000
+        rep movsw
+        pop di
+        pop si
+        pop cx
+        pop es
+        pop ds
+    }
 }
 
 void Screen::plot_pixel(unsigned int x, unsigned int y, unsigned char color)
