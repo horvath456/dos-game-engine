@@ -11,14 +11,12 @@
 void main()
 {
 	Screen screen = Screen();
-	screen.set_graphics_mode();
 
 	Timer timer = Timer();
 
 	if (Adlib::check_if_adlib_present())
 	{
 		cout << "Adlib detected!!" << endl;
-		sleep(1);
 		Adlib adlib = Adlib();
 		adlib.play();
 		sleep(1);

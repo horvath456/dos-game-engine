@@ -15,9 +15,9 @@ public:
 
     void plot_pixel(unsigned int x, unsigned int y, unsigned char color);
 
-    void set_graphics_mode();
-
 private:
+    static void set_screen_mode(unsigned char mode);
+
     unsigned char far *screen_memory;
     unsigned char far *screen_buffer;
 };

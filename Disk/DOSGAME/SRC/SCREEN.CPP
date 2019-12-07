@@ -6,11 +6,13 @@ Screen::Screen()
     screen_memory = (unsigned char far *)0xA0000000L;
     screen_buffer = new far unsigned char[64000];
     clear_screen_buffer();
+    set_screen_mode(0x13);
 }
 
 Screen::~Screen()
 {
     delete[] screen_buffer;
+    set_screen_mode(0x2);
 }
 
 void Screen::draw_screen_buffer()
@@ -28,11 +30,11 @@ void Screen::plot_pixel(unsigned int x, unsigned int y, unsigned char color)
     screen_buffer[((y << 8) + (y << 6)) + x] = color;
 }
 
-void Screen::set_graphics_mode()
+void Screen::set_screen_mode(unsigned char mode)
 {
     asm {
-        mov ah, 0x0
-        mov al, 0x13
+        xor ah, ah
+        mov al, mode
         int 0x10
     }
 }
