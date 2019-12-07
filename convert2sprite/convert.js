@@ -30,6 +30,7 @@ console.log("USAGE: node convert.js INPUT_PATH SPRITE_OUT_PATH PALETTE_OUT_PATH 
                     const r = (data[(i * width + j) * 4]) >> 2;
                     const g = (data[(i * width + j) * 4 + 1]) >> 2;
                     const b = (data[(i * width + j) * 4 + 2]) >> 2;
+                    const a = (data[(i * width + j) * 4 + 3]);
 
                     const rgb24 = r << 16 | g << 8 | b;
 
@@ -37,7 +38,7 @@ console.log("USAGE: node convert.js INPUT_PATH SPRITE_OUT_PATH PALETTE_OUT_PATH 
                         palette.push(rgb24);
                     }
 
-                    output[(i * width) + j + 4] = palette.indexOf(rgb24);
+                    output[(i * width) + j + 4] = (a === 0 ? 0xFF : palette.indexOf(rgb24));
                 }
             }
 

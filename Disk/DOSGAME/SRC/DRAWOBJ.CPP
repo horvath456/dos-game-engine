@@ -13,7 +13,8 @@ void DrawObject::draw(Screen &screen, int x, int y)
         {
             if (x + j < 0 || x + j >= 320)
                 continue;
-            screen.plot_pixel(x + j, y + i, pixel_at(j, i));
+            if (pixel_at(j, i) != 0xFF)
+                screen.plot_pixel(x + j, y + i, pixel_at(j, i));
         }
     }
 }
