@@ -6,6 +6,7 @@
 Adlib::Adlib()
 {
     reset_card();
+    init();
 }
 
 Adlib::~Adlib()
@@ -47,6 +48,14 @@ int Adlib::check_if_adlib_present()
     return (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
 }
 
+void Adlib::init()
+{
+    write_register(0x1, 32);
+    write_register(0xB0, 0x11);
+    write_register(0x4, 0x60);
+    write_register(0x4, 0x80);
+}
+
 void Adlib::write_register(unsigned char num, unsigned char value)
 {
     outp(ADDRESS_STATUS_PORT, num);
@@ -74,4 +83,14 @@ void Adlib::reset_card()
     {
         write_register(i, 0x0);
     }
+
+    write_register(0x20, 0x41);
+    write_register(0x40, 0x10);
+    write_register(0x60, 0xF0);
+    write_register(0x80, 0x77);
+    write_register(0x23, 0x41);
+    write_register(0x43, 0x0);
+    write_register(0x63, 0xF0);
+    write_register(0x83, 0x77);
+    write_register(0xBD, 0x10);
 }

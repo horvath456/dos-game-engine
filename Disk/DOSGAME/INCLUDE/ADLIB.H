@@ -25,6 +25,7 @@ private:
     static unsigned char read_status_register();
     static void delay_using_read(unsigned int iterations);
     static void reset_card();
+    static void init();
 };
 
 #endif
