@@ -3,10 +3,9 @@
 
 #include "timer.h"
 
-Timer::Timer()
+Timer::Timer(unsigned int freq)
 {
-    Timer::game_time = 0;
-    Timer::set_timer(FRATE);
+    Timer::set_timer(freq);
 }
 
 Timer::~Timer()
@@ -17,7 +16,6 @@ Timer::~Timer()
 void far interrupt Timer::new_handler(...)
 {
     clock_ticks += counter;
-    game_time++;
     if (clock_ticks >= 0x10000)
     {
         clock_ticks -= 0x10000;
@@ -32,7 +30,7 @@ void far interrupt Timer::new_handler(...)
 void Timer::set_timer(int frate)
 {
     clock_ticks = 0;
-    counter = 0x10000 / frate;
+    counter = 0x1234DD / frate;
     old_handler = getvect(TIMEINT);
     setvect(TIMEINT, Timer::new_handler);
     outport(0x43, 0x34);
@@ -50,4 +48,3 @@ void Timer::reset_timer()
 
 void far interrupt (*Timer::old_handler)(...);
 long int Timer::clock_ticks, Timer::counter;
-unsigned long int Timer::game_time;

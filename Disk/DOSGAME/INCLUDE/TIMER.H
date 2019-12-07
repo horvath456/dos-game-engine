@@ -6,21 +6,17 @@
 #include <dos.h>
 
 #define TIMEINT 0x8
-#define FRATE 10
-
-// Timer fires every 5.5 ms
 
 class Timer
 {
 public:
-    Timer();
+    Timer(unsigned int freq);
 
     ~Timer();
 
 private:
     static void far interrupt (*old_handler)(...);
     static long int clock_ticks, counter;
-    static unsigned long int game_time;
 
     static void far interrupt new_handler(...);
 

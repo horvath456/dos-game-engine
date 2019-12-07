@@ -12,7 +12,7 @@ void main()
 {
 	Screen screen = Screen();
 
-	Timer timer = Timer();
+	Timer timer = Timer(100);
 
 	if (Adlib::check_if_adlib_present())
 	{
