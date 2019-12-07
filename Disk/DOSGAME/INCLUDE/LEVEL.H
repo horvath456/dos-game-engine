@@ -17,7 +17,7 @@ public:
     long int y;
 
 private:
-    Player &player;
+    Player *player;
     DrawObject far *draw_objects;
 
     unsigned char far *level_data;

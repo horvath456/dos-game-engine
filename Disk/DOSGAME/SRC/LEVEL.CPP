@@ -6,14 +6,14 @@
 
 #include "level.h"
 
-Level::Level(const char *filename, Player &pl)
+Level::Level(const char *filename, Player& pl)
 {
-    player = pl;
+    player = &pl;
     x = 0;
     y = 0;
 
-    draw_objects = new far DrawObject[2];
-    draw_objects[0] = DrawObject("IMAGES\\GRASS.SPR");
+   // draw_objects = new far DrawObject[2];
+    //draw_objects[0] = DrawObject("IMAGES\\GRASS.SPR");
 
     fstream infile = fstream(filename, ios::in | ios::binary);
 
@@ -24,9 +24,9 @@ Level::Level(const char *filename, Player &pl)
 
     cnt_level_elements = (buf[0] << 8) + buf[1];
 
-    this->level_data = new far unsigned char[(unsigned int)(cnt_elements * 5)];
+    this->level_data = new far unsigned char[(unsigned int)(cnt_level_elements * 5)];
 
-    for (unsigned int i = 0; i < cnt_elements * 5; i++)
+    for (unsigned int i = 0; i < cnt_level_elements * 5; i++)
     {
         unsigned char c;
         infile.get(c);
@@ -34,6 +34,6 @@ Level::Level(const char *filename, Player &pl)
     }
 }
 
-Level::draw(Screen &screen)
+void Level::draw(Screen &screen)
 {
 }
