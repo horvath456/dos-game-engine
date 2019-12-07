@@ -5,11 +5,12 @@
 
 #include "screen.h"
 #include "drawobj.h"
+#include "movable.h"
 
-class Player
+class Player : Movable
 {
 public:
-    Player(const char* filename);
+    Player(const char *filename);
 
     void draw(Screen &screen);
 

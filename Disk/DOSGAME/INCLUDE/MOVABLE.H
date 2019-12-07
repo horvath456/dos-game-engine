@@ -4,6 +4,7 @@
 #pragma once
 
 #include "vector2d.h"
+#include "aabb.h"
 #include <math.h>
 
 #define TRUE 1
@@ -22,7 +23,8 @@ public:
         pushed_left_wall = pushes_left_wall;
         was_at_ceiling = at_ceiling;
 
-        pos += speed * delta_time;
+        pos.x += speed.x * delta_time;
+        pos.y += speed.y * delta_time;
 
         if (pos.y < 0.0f)
         {
@@ -32,11 +34,12 @@ public:
         else
             on_ground = FALSE;
 
-        aabb.center = pos + aabb_offset;
+        aabb.center.x = pos.x + aabb_offset.x;
+        aabb.center.y = pos.y + aabb_offset.y;
     }
 
-    int get_pos_x() { return (int)absf(pos.x); }
-    int get_pos_y() { return (int)absf(pos.y); }
+    int get_pos_x() { return (int)fabs(pos.x); }
+    int get_pos_y() { return (int)fabs(pos.y); }
 
     Vector2D old_pos;
     Vector2D pos;
@@ -44,7 +47,7 @@ public:
     Vector2D speed;
 
     AABB aabb;
-    Vector2 aabb_offset;
+    Vector2D aabb_offset;
 
     int pushed_right_wall;
     int pushes_right_wall;
