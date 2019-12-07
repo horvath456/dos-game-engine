@@ -10,15 +10,13 @@
 #include "player.h"
 #include "keyboard.h"
 
-#define SPEED 4
-
 void main()
 {
 	Screen screen = Screen();
 	Timer timer = Timer(240);
 	Keyboard keyboard = Keyboard();
 
-	if (Adlib::check_if_adlib_present())
+	if (!Adlib::check_if_adlib_present())
 	{
 		cout << "Adlib detected!!" << endl;
 		Adlib adlib = Adlib();
@@ -43,9 +41,9 @@ void main()
 			break;
 
 		if (keyboard.check_if_pressed(75))
-			player.target_velocity.x = -1 * SPEED;
+			player.target_velocity.x = -1;
 		if (keyboard.check_if_pressed(77))
-			player.target_velocity.x = 1 * SPEED;
+			player.target_velocity.x = 1;
 
 		player.update_physics(delta_time);
 

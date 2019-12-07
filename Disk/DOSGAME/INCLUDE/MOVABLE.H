@@ -10,14 +10,15 @@
 #define TRUE 1
 #define FALSE 0
 
-#define GRAVITY 1
+#define GRAVITY 2
+#define MAX_FALLING_SPEED 10
+#define SPEED 4
 
 class Movable
 {
 public:
     Movable()
     {
-        gravity = Vector2D(0, GRAVITY);
     }
 
     void update_physics(double delta_time)
@@ -30,13 +31,40 @@ public:
         pushed_left_wall = pushes_left_wall;
         was_at_ceiling = at_ceiling;
 
-        velocity = velocity + gravity * delta_time;
-        velocity.x = target_velocity.x;
+        if (!on_ground)
+        {
+            velocity.y = (velocity.y + GRAVITY * delta_time) > MAX_FALLING_SPEED ? MAX_FALLING_SPEED : (velocity.y + GRAVITY * delta_time);
+        }
+        else
+        {
+            velocity.y = 0;
+        }
+
+        if (target_velocity.x > 0)
+        {
+            if (pushes_right_wall)
+                velocity.x = 0.0;
+            else
+                velocity.x = target_velocity.x * SPEED;
+        }
+
+        if (target_velocity.x < 0)
+        {
+            if (pushes_left_wall)
+                velocity.x = 0.0;
+            else
+                velocity.x = target_velocity.x * SPEED;
+        }
+
+        if (target_velocity.x == 0)
+        {
+            velocity.x = 0;
+        }
 
         movement(Vector2D(velocity.x * delta_time, (double)0));
         movement(Vector2D((double)0, velocity.y * delta_time));
 
-        on_ground = pos.y <= 20;
+        on_ground = pos.y >= 150;
 
         aabb.center = pos + aabb_offset;
 
@@ -50,7 +78,6 @@ public:
     Vector2D pos;
     Vector2D old_velocity;
     Vector2D velocity;
-    Vector2D gravity;
 
     Vector2D target_velocity;
 
