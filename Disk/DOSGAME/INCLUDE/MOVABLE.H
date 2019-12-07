@@ -12,6 +12,7 @@
 
 #define GRAVITY 2
 #define MAX_FALLING_SPEED 10
+#define JUMP_SPEED 10
 #define SPEED 4
 
 class Movable
@@ -31,7 +32,12 @@ public:
         pushed_left_wall = pushes_left_wall;
         was_at_ceiling = at_ceiling;
 
-        if (!on_ground)
+        if (target_velocity.y < 0 && on_ground)
+        {
+            velocity.y = target_velocity.y * JUMP_SPEED;
+        }
+
+        if (target_velocity.y < 0 || !on_ground)
         {
             velocity.y = (velocity.y + GRAVITY * delta_time) > MAX_FALLING_SPEED ? MAX_FALLING_SPEED : (velocity.y + GRAVITY * delta_time);
         }
@@ -64,7 +70,7 @@ public:
         movement(Vector2D(velocity.x * delta_time, (double)0));
         movement(Vector2D((double)0, velocity.y * delta_time));
 
-        on_ground = pos.y >= 150;
+        on_ground = pos.y >= 145;
 
         aabb.center = pos + aabb_offset;
 

@@ -14,6 +14,8 @@ public:
 
     int check_if_pressed(unsigned char scancode);
 
+    unsigned char get_last_action();
+
 private:
     static void far interrupt (*old_handler)(...);
 
@@ -22,7 +24,8 @@ private:
     static void init();
     static void deinit();
 
-    static unsigned char* buffer;
+    static unsigned char *pressed_mask;
+    static unsigned char last_action;
 };
 
 #endif

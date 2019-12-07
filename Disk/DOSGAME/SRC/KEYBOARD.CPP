@@ -7,8 +7,8 @@
 Keyboard::Keyboard()
 {
     init();
-    buffer = new unsigned char[256];
-    fmemset(buffer, 256, 0);
+    pressed_mask = new unsigned char[256];
+    fmemset(pressed_mask, 256, 0);
 }
 
 Keyboard::~Keyboard()
@@ -18,7 +18,14 @@ Keyboard::~Keyboard()
 
 int Keyboard::check_if_pressed(unsigned char scancode)
 {
-    return buffer[scancode & 0x1F];
+    return pressed_mask[scancode & 0x1F];
+}
+
+unsigned char Keyboard::get_last_action()
+{
+    unsigned char c = last_action;
+    last_action = 0;
+    return c;
 }
 
 void Keyboard::init()
@@ -37,14 +44,18 @@ void far interrupt Keyboard::new_handler(...)
     unsigned char byte = inp(KEYBOARD_PORT);
     if ((byte & 0x80))
     {
-        buffer[byte & 0x1F] = 0;
+        pressed_mask[byte & 0x3F] = 0;
+        last_action = (byte & 0x3F) | 0x80;
     }
     else
     {
-        buffer[byte & 0x1F] = 1;
+        if (pressed_mask[byte & 0x3F] == 0)
+            last_action = (byte & 0x3F);
+        pressed_mask[byte & 0x3F] = 1;
     }
     outp(0x20, 0x20);
 }
 
 void far interrupt (*Keyboard::old_handler)(...);
-unsigned char *Keyboard::buffer;
+unsigned char *Keyboard::pressed_mask;
+unsigned char Keyboard::last_action;
