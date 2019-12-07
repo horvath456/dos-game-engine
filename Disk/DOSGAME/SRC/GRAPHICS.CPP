@@ -6,15 +6,26 @@
 #include "drawobj.h"
 #include "palette.h"
 #include "timer.h"
+#include "adlib.h"
 
 void main()
 {
 	Screen screen = Screen();
 	screen.set_graphics_mode();
 
-	Palette::load_palette("DATA\\PALETTE.DAT");
+	Timer timer = Timer();
 
-	Timer timer = Timer(5);
+	if (Adlib::check_if_adlib_present())
+	{
+		cout << "Adlib detected!!" << endl;
+		sleep(1);
+		Adlib adlib = Adlib();
+		adlib.play();
+		sleep(1);
+		adlib.stop();
+	}
+
+	Palette::load_palette("DATA\\PALETTE.DAT");
 
 	DrawObject draw_obj = DrawObject("IMAGES\\BACKGRND.SPR");
 	draw_obj.draw(screen, 0, 0);

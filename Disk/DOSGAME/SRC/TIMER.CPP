@@ -3,12 +3,10 @@
 
 #include "timer.h"
 
-#define TIMEINT 0x8
-
-Timer::Timer(int frate)
+Timer::Timer()
 {
     Timer::game_time = 0;
-    Timer::set_timer(frate);
+    Timer::set_timer(FRATE);
 }
 
 Timer::~Timer()

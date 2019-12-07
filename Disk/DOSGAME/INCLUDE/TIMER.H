@@ -6,11 +6,14 @@
 #include <dos.h>
 
 #define TIMEINT 0x8
+#define FRATE 10
+
+// Timer fires every 5.5 ms
 
 class Timer
 {
 public:
-    Timer(int frate);
+    Timer();
 
     ~Timer();
 
