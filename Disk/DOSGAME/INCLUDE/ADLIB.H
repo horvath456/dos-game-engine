@@ -16,9 +16,9 @@ public:
 
     static int check_if_adlib_present();
 
-    void play();
+    void play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform);
 
-    void stop();
+    void stop(unsigned char channel);
 
 private:
     static void write_register(unsigned char num, unsigned char value);
@@ -26,6 +26,7 @@ private:
     static void delay_using_read(unsigned int iterations);
     static void reset_card();
     static void init();
+    static unsigned char calc_register_offset(unsigned char channel);
 };
 
 #endif

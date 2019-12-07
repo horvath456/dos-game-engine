@@ -14,24 +14,36 @@ Adlib::~Adlib()
     reset_card();
 }
 
-void Adlib::play()
+void Adlib::play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform)
 {
-    write_register(0x20, 0x01);
-    write_register(0x40, 0x10);
-    write_register(0x60, 0xF0);
-    write_register(0x80, 0x77);
-    write_register(0xA0, 0x98);
-    write_register(0x23, 0x01);
-    write_register(0x43, 0x00);
-    write_register(0x63, 0xF0);
-    write_register(0x83, 0x77);
-    write_register(0xB0, 0x31);
+    unsigned char register_offset = calc_register_offset(channel);
+    write_register(0x20 + register_offset, 0x01);
+    write_register(0x40 + register_offset, 0x10);
+    write_register(0x60 + register_offset, 0xF0);
+    write_register(0x80 + register_offset, 0x77);
+    write_register(0xE0 + register_offset, waveform);
+    write_register(0xA0 + channel - 1, (unsigned char)(freq & 0xff));
+    write_register(0x23 + register_offset, 0x01);
+    write_register(0x43 + register_offset, 0x00);
+    write_register(0x63 + register_offset, 0xF0);
+    write_register(0x83 + register_offset, 0x77);
+    write_register(0xE3 + register_offset, waveform);
+    write_register(0xB0 + channel - 1, ((freq & 0x300) >> 8) | ((octave & 0x7) << 2) | 0x20);
 }
 
-void Adlib::stop()
+void Adlib::stop(unsigned char channel)
 {
     delay_using_read(35);
-    write_register(0xB0, 0x11);
+    write_register(0xB0 + calc_register_offset(channel), 0x11);
+}
+
+unsigned char Adlib::calc_register_offset(unsigned char channel)
+{
+    if (channel <= 3)
+        return channel - 1;
+    if (channel <= 6)
+        return channel + 4;
+    return channel + 9;
 }
 
 int Adlib::check_if_adlib_present()

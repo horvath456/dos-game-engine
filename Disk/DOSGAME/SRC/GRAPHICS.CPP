@@ -18,9 +18,9 @@ void main()
 	{
 		cout << "Adlib detected!!" << endl;
 		Adlib adlib = Adlib();
-		adlib.play();
+		adlib.play(1, 300, 3, 1);
 		sleep(1);
-		adlib.stop();
+		adlib.stop(1);
 	}
 
 	Palette::load_palette("DATA\\PALETTE.DAT");
