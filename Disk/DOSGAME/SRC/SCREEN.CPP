@@ -25,6 +25,11 @@ void Screen::clear_screen_buffer()
     fmemset(screen_buffer, 64000, 0);
 }
 
+void Screen::draw_background(unsigned char far* buf)
+{
+    fmemcpy(buf, screen_buffer, 64000);
+}
+
 void Screen::plot_pixel(unsigned int x, unsigned int y, unsigned char color)
 {
     screen_buffer[((y << 8) + (y << 6)) + x] = color;

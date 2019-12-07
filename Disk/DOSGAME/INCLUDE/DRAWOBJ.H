@@ -18,14 +18,16 @@ public:
     DrawObject(const char *filename);
     ~DrawObject();
 
-    void draw(Screen& screen, int x, int y);
+    void draw(Screen &screen, int x, int y);
+
+    unsigned char far *get_buffer();
 
 private:
+    unsigned char pixel_at(unsigned int x, unsigned int y);
+
     unsigned int width;
     unsigned int height;
     unsigned char far *buffer;
-
-    unsigned char pixel_at(unsigned int x, unsigned int y);
 };
 
 #endif

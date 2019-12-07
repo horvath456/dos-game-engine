@@ -13,6 +13,8 @@ public:
 
     void clear_screen_buffer();
 
+    void draw_background(unsigned char far *buf);
+
     void plot_pixel(unsigned int x, unsigned int y, unsigned char color);
 
 private:

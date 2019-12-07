@@ -25,8 +25,14 @@ void main()
 
 	Palette::load_palette("DATA\\PALETTE.DAT");
 
-	DrawObject draw_obj = DrawObject("IMAGES\\BACKGRND.SPR");
-	draw_obj.draw(screen, 0, 0);
+	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
+	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
+
+	screen.draw_background(background.get_buffer());
+	for (int i = 0; i < 20; i++)
+	{
+		grass.draw(screen, i * 16, 200 - 16);
+	}
 
 	screen.draw_screen_buffer();
 
