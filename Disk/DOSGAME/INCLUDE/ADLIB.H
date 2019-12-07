@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "timer.h"
-
 #define ADDRESS_STATUS_PORT 0x388
 #define DATA_PORT 0x389
 

@@ -3,3 +3,4 @@ TURBOC3
 *.OBJ
 *.EXE
 BUILD
+.vscode

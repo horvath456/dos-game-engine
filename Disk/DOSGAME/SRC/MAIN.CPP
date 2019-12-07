@@ -9,6 +9,7 @@
 #include "adlib.h"
 #include "player.h"
 #include "keyboard.h"
+#include "speaker.h"
 
 void main()
 {
@@ -16,13 +17,18 @@ void main()
 	Timer timer = Timer(240);
 	Keyboard keyboard = Keyboard();
 
-	if (!Adlib::check_if_adlib_present())
+	if (Adlib::check_if_adlib_present())
 	{
 		cout << "Adlib detected!!" << endl;
 		Adlib adlib = Adlib();
 		adlib.play(1, 300, 3, 1);
 		sleep(1);
 		adlib.stop(1);
+	} else {
+		cout << "Speaker detected!!" << endl;
+		Speaker::play(300);
+		sleep(1);
+		Speaker::stop();
 	}
 
 	Palette::load_palette("DATA\\PALETTE.DAT");
