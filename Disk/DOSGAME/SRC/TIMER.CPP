@@ -15,6 +15,7 @@ Timer::~Timer()
 
 void far interrupt Timer::new_handler(...)
 {
+    game_time++;
     clock_ticks += counter;
     if (clock_ticks >= 0x10000)
     {
@@ -46,5 +47,19 @@ void Timer::reset_timer()
     setvect(TIMEINT, old_handler);
 }
 
+unsigned long long Timer::get_time()
+{
+    return game_time;
+}
+
+void Timer::delay(unsigned long int ms)
+{
+    unsigned long long start_timer = get_time();
+    while (get_time() - start_timer < ms)
+    {
+    }
+}
+
 void far interrupt (*Timer::old_handler)(...);
 long int Timer::clock_ticks, Timer::counter;
+unsigned long long Timer::game_time;

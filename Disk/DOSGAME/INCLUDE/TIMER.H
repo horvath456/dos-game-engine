@@ -14,9 +14,14 @@ public:
 
     ~Timer();
 
+    unsigned long long get_time();
+
+    void delay(unsigned long int ms);
+
 private:
     static void far interrupt (*old_handler)(...);
     static long int clock_ticks, counter;
+    static unsigned long long game_time;
 
     static void far interrupt new_handler(...);
 
