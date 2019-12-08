@@ -7,7 +7,6 @@ Timer::Timer(unsigned int freq)
 {
     frequency = freq;
     Timer::set_timer(freq);
-    callback = NULL;
 }
 
 Timer::~Timer()
@@ -26,7 +25,13 @@ void far interrupt Timer::new_handler(...)
     }
     else
     {
-        if(callback != NULL) callback();
+        for (int i = 0; i < 10; i++)
+        {
+            if (callbacks[i] != (void (*)())0x0)
+            {
+                ((void (*)())(callbacks[i]))();
+            }
+        }
         outport(0x20, 0x20);
     };
 }
@@ -68,12 +73,30 @@ void Timer::delay(unsigned long int ms)
     }
 }
 
-void Timer::set_callback(void (*cb)(void)) {
-    callback = cb;
+void Timer::add_callback(void (*cb)(void))
+{
+    for (int i = 0; i < 10; i++)
+    {
+        if (callbacks[i] == (void (*)())0x0)
+        {
+            callbacks[i] = cb;
+        }
+    }
+}
+
+void Timer::remove_callback(void (*cb)(void))
+{
+    for (int i = 0; i < 10; i++)
+    {
+        if (callbacks[i] == cb)
+        {
+            callbacks[i] = (void *)0x0;
+        }
+    }
 }
 
 void far interrupt (*Timer::old_handler)(...);
 long int Timer::clock_ticks, Timer::counter;
 unsigned long long Timer::game_time;
 unsigned int Timer::frequency;
-void (*Timer::callback)(void);
+void (*Timer::callbacks[10])(void);

@@ -33,13 +33,13 @@ void Speaker::play_music(const char *filename, Timer &t)
     buffer_length = num_notes * 4;
     timer = &t;
 
-    timer->set_callback(&callback_handler);
+    timer->add_callback(&callback_handler);
 }
 
 void Speaker::play_music_end()
 {
     delete[] buffer;
-    timer->set_callback((void *)0x0);
+    timer->remove_callback(&callback_handler);
     stop();
     is_music_playing = FALSE;
 }
