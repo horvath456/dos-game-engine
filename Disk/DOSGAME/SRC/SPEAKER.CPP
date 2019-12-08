@@ -33,7 +33,7 @@ void Speaker::play_music(const char *filename, Timer &t)
     buffer_length = num_notes * 4;
     timer = &t;
 
-    timer->add_callback(&callback_handler);
+    timer->add_callback(&callback_handler, (void *)0x0);
 }
 
 void Speaker::stop_music()
@@ -53,7 +53,7 @@ void Speaker::play_music_end()
     buffer = NULL;
 }
 
-void Speaker::callback_handler()
+void Speaker::callback_handler(void *_)
 {
     if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
     {

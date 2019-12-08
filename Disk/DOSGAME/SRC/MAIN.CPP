@@ -13,12 +13,21 @@
 
 #define DELTA_TIME_FACTOR 15
 
+void fade_in_palette(void *p)
+{
+	Palette *pal = (Palette *)p;
+	pal->fade_in();
+}
+
 void main()
 {
 	Screen screen = Screen();
-	Timer timer = Timer(240);
+	Timer timer = Timer(1000);
 	Keyboard keyboard = Keyboard();
 	Adlib adlib = Adlib();
+
+	Palette palette = Palette();
+	palette.load_palette_file("DATA\\PALETTE.DAT");
 
 	if (Adlib::check_if_adlib_present())
 	{
@@ -33,8 +42,6 @@ void main()
 		sleep(1);
 	}
 
-	Palette::load_palette("DATA\\PALETTE.DAT");
-
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
 
@@ -42,6 +49,9 @@ void main()
 
 	unsigned long long game_time = timer.get_time();
 	double delta_time = 0;
+
+	palette.blackout_palette();
+	timer.add_timed_callback(&fade_in_palette, 500, (void*)&palette);
 
 	while (1 == 1)
 	{

@@ -46,7 +46,7 @@ void Adlib::play_music(const char *filename, Timer &t)
 
     self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
 
-    timer->add_callback(&callback_handler);
+    timer->add_callback(&callback_handler, (void *)0x0);
 }
 
 void Adlib::stop_music()
@@ -66,7 +66,7 @@ void Adlib::play_music_end()
     buffer = NULL;
 }
 
-void Adlib::callback_handler()
+void Adlib::callback_handler(void *_)
 {
     if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
     {

@@ -27,7 +27,7 @@ public:
     void stop(unsigned char channel);
 
 private:
-    static void callback_handler();
+    static void callback_handler(void *_);
     static void play_music_end();
 
     static unsigned char far *buffer;

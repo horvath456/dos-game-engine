@@ -14,7 +14,7 @@ public:
     static void stop();
 
 private:
-    static void callback_handler();
+    static void callback_handler(void *_);
     static void play_music_end();
 
     static unsigned char far *buffer;
@@ -22,7 +22,7 @@ private:
     static unsigned int music_pos;
     static unsigned long long game_time;
     static unsigned long int buffer_length;
-    static Timer* timer;
+    static Timer *timer;
 };
 
 #endif
