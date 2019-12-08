@@ -62,7 +62,7 @@ unsigned long long Timer::get_time()
 
 double Timer::get_delta_time(unsigned long long t)
 {
-    return (double)((double)(game_time - t) / (double)100);
+    return (double)((double)(game_time - t) / (double)frequency);
 }
 
 void Timer::delay(unsigned long int ms)

@@ -15,7 +15,7 @@ public:
     void draw(Screen &screen);
 
 private:
-    DrawObject drawobj;
+    DrawObject* drawobj;
 };
 
 #endif

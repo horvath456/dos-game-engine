@@ -11,6 +11,8 @@
 #include "keyboard.h"
 #include "speaker.h"
 
+#define DELTA_TIME_FACTOR 15
+
 void main()
 {
 	Screen screen = Screen();
@@ -58,20 +60,20 @@ void main()
 
 		player.update_physics(delta_time);
 
-		if (Screen::is_in_vertical_retrace())
+		screen.draw_background(background.get_buffer());
+
+		for (int i = 0; i < 20; i++)
 		{
-			screen.draw_background(background.get_buffer());
-
-			for (int i = 0; i < 20; i++)
-			{
-				grass.draw(screen, i * 16, 200 - 16);
-			}
-			player.draw(screen);
-
-			screen.draw_screen_buffer();
+			grass.draw(screen, i * 16, 200 - 16);
 		}
+		player.draw(screen);
 
-		delta_time = timer.get_delta_time(game_time) * 10;
+		screen.draw_screen_buffer();
+
+		delta_time = timer.get_delta_time(game_time) * DELTA_TIME_FACTOR;
 		game_time = timer.get_time();
+
+		while (!Screen::is_in_vertical_retrace())
+			;
 	}
 }
