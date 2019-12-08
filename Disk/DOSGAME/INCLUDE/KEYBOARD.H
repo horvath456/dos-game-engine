@@ -17,6 +17,9 @@ public:
     unsigned char get_last_action();
     void clear_last_action();
 
+    int get_key_up(unsigned char scancode);
+    int get_key_down(unsigned char scancode);
+
 private:
     static void far interrupt (*old_handler)(...);
 

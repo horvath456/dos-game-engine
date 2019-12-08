@@ -31,6 +31,28 @@ void Keyboard::clear_last_action()
     last_action = 0;
 }
 
+int Keyboard::get_key_down(unsigned char scancode)
+{
+    if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 0))
+    {
+        clear_last_action();
+        return 1;
+    }
+    else
+        return 0;
+}
+
+int Keyboard::get_key_up(unsigned char scancode)
+{
+    if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 1))
+    {
+        clear_last_action();
+        return 1;
+    }
+    else
+        return 0;
+}
+
 void Keyboard::init()
 {
     asm {

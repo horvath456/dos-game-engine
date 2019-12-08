@@ -45,8 +45,6 @@ void main()
 
 	while (1 == 1)
 	{
-		unsigned char last_keyboard_action = keyboard.get_last_action();
-
 		if (keyboard.check_if_pressed(1))
 			break;
 
@@ -55,7 +53,7 @@ void main()
 		if (keyboard.check_if_pressed(77))
 			player.target_velocity.x = 1;
 
-		if (last_keyboard_action == 57)
+		if (keyboard.get_key_down(57))
 			player.target_velocity.y = -1;
 
 		player.update_physics(delta_time);
