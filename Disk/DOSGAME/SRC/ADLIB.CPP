@@ -1,7 +1,10 @@
+#include "adlib.h"
+
 #include <dos.h>
 #include <time.h>
-
-#include "adlib.h"
+#include <fstream.h>
+#include <iostream.h>
+#include "timer.h"
 
 Adlib::Adlib()
 {
@@ -12,6 +15,73 @@ Adlib::Adlib()
 Adlib::~Adlib()
 {
     reset_card();
+}
+
+void Adlib::play_music(const char *filename, Timer &t)
+{
+    fstream infile = fstream(filename, ios::in | ios::binary);
+
+    unsigned char buf[4];
+
+    infile.get(buf[0]);
+    infile.get(buf[1]);
+
+    unsigned int num_notes = (buf[0] << 8) + buf[1];
+
+    buffer = new far unsigned char[(unsigned int)(num_notes * 7)];
+
+    for (int i = 0; i < num_notes * 7; i++)
+    {
+        unsigned char c;
+        infile.get(c);
+        buffer[i] = c;
+    }
+
+    is_music_playing = TRUE;
+    music_pos = 0;
+    game_time = t.get_time();
+    buffer_length = num_notes * 7;
+    timer = &t;
+    self = this;
+
+    self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+
+    timer->add_callback(&callback_handler);
+}
+
+void Adlib::stop_music()
+{
+    if (is_music_playing)
+    {
+        play_music_end();
+    }
+}
+
+void Adlib::play_music_end()
+{
+    timer->remove_callback(&callback_handler);
+    self->stop(1);
+    is_music_playing = FALSE;
+    delete[] buffer;
+    buffer = NULL;
+}
+
+void Adlib::callback_handler()
+{
+    if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
+    {
+        music_pos += 7;
+
+        if (music_pos >= buffer_length)
+        {
+            play_music_end();
+            return;
+        }
+
+        game_time = timer->get_time();
+
+        self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+    }
 }
 
 void Adlib::play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform)
@@ -48,16 +118,24 @@ unsigned char Adlib::calc_register_offset(unsigned char channel)
 
 int Adlib::check_if_adlib_present()
 {
-    write_register(4, 0x60);
-    write_register(4, 0x80);
-    unsigned char status1 = read_status_register();
-    write_register(2, 0xFF);
-    write_register(4, 0x21);
-    delay_using_read(800);
-    unsigned char status2 = read_status_register();
-    write_register(4, 0x60);
-    write_register(4, 0x80);
-    return (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
+    if (is_present == -1)
+    {
+        write_register(4, 0x60);
+        write_register(4, 0x80);
+        unsigned char status1 = read_status_register();
+        write_register(2, 0xFF);
+        write_register(4, 0x21);
+        delay_using_read(800);
+        unsigned char status2 = read_status_register();
+        write_register(4, 0x60);
+        write_register(4, 0x80);
+        is_present = (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
+        return (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
+    }
+    else
+    {
+        return is_present;
+    }
 }
 
 void Adlib::init()
@@ -106,3 +184,13 @@ void Adlib::reset_card()
     write_register(0x83, 0x77);
     write_register(0xBD, 0x10);
 }
+
+unsigned char far *Adlib::buffer;
+int Adlib::is_music_playing;
+unsigned int Adlib::music_pos;
+unsigned long long Adlib::game_time;
+unsigned long int Adlib::buffer_length;
+Timer *Adlib::timer;
+Adlib *Adlib::self = NULL;
+
+int Adlib::is_present = -1;

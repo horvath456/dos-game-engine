@@ -17,23 +17,20 @@ void main()
 	Timer timer = Timer(240);
 	Keyboard keyboard = Keyboard();
 
+	Adlib adlib = Adlib();
+
 	if (Adlib::check_if_adlib_present())
 	{
 		cout << "Adlib detected!!" << endl;
-		Adlib adlib = Adlib();
-		adlib.play(1, 300, 3, 1);
+		adlib.play_music("DATA\\SOUND.ADL", timer);
 		sleep(1);
-		adlib.stop(1);
 	}
 	else
 	{
 		cout << "Speaker detected!!" << endl;
-		Speaker::play(300);
+		Speaker::play_music("DATA\\SOUND.SPK", timer);
 		sleep(1);
-		Speaker::stop();
 	}
-
-	Speaker::play_music("DATA\\SOUND.SPK", timer);
 
 	Palette::load_palette("DATA\\PALETTE.DAT");
 

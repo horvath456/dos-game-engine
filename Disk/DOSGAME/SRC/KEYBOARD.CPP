@@ -1,8 +1,8 @@
+#include "keyboard.h"
+
 #include <dos.h>
 #include <iostream.h>
 #include "farmem.h"
-
-#include "keyboard.h"
 
 Keyboard::Keyboard()
 {

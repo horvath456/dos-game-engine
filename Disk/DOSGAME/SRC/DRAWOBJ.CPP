@@ -1,6 +1,6 @@
 #include "drawobj.h"
-#include "screen.h"
 
+#include "screen.h"
 #include <iostream.h>
 
 void DrawObject::draw(Screen &screen, int x, int y)

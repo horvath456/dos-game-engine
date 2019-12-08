@@ -1,7 +1,7 @@
+#include "timer.h"
+
 #include <dos.h>
 #include <mem.h>
-
-#include "timer.h"
 
 Timer::Timer(unsigned int freq)
 {
