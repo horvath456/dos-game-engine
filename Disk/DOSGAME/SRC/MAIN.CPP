@@ -13,12 +13,6 @@
 
 #define DELTA_TIME_FACTOR 15
 
-void fade_in_palette(void *p)
-{
-	Palette *pal = (Palette *)p;
-	pal->fade_in();
-}
-
 void main()
 {
 	Screen screen = Screen();
@@ -31,15 +25,11 @@ void main()
 
 	if (Adlib::check_if_adlib_present())
 	{
-		cout << "Adlib detected!!" << endl;
 		adlib.play_music("DATA\\SOUND.ADL", timer);
-		sleep(1);
 	}
 	else
 	{
-		cout << "Speaker detected!!" << endl;
 		Speaker::play_music("DATA\\SOUND.SPK", timer);
-		sleep(1);
 	}
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
@@ -47,11 +37,11 @@ void main()
 
 	Player player = Player("IMAGES\\PLAYER.SPR");
 
+	palette.blackout_palette();
+	palette.fade_in();
+
 	unsigned long long game_time = timer.get_time();
 	double delta_time = 0;
-
-	palette.blackout_palette();
-	timer.add_timed_callback(&fade_in_palette, 500, (void*)&palette);
 
 	while (1 == 1)
 	{

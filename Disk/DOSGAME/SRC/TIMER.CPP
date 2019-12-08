@@ -2,6 +2,7 @@
 
 #include <dos.h>
 #include <mem.h>
+#include <iostream.h>
 
 Timer::Timer(unsigned int freq)
 {
@@ -31,12 +32,15 @@ void far interrupt Timer::new_handler(...)
             {
                 ((void (*)(void *))(callbacks[i]))(callback_p_arguments[i]);
             }
-            if (delay_callbacks[i] != (void (*)(void *))0x0 && delay_callback_times[i] >= game_time)
+            if (delay_callbacks[i] != (void (*)(void *))0x0)
             {
-                ((void (*)(void *))(delay_callbacks[i]))(delay_callback_p_arguments[i]);
-                delay_callbacks[i] = (void *)0x0;
-                delay_callback_times[i] = 0;
-                delay_callback_p_arguments[i] = (void *)0x0;
+                if (delay_callback_times[i] <= game_time)
+                {
+                    ((void (*)(void *))(delay_callbacks[i]))(delay_callback_p_arguments[i]);
+                    delay_callbacks[i] = (void *)0x0;
+                    delay_callback_times[i] = 0;
+                    delay_callback_p_arguments[i] = (void *)0x0;
+                }
             }
         }
         outport(0x20, 0x20);
@@ -75,7 +79,7 @@ double Timer::get_delta_time(unsigned long long t)
 void Timer::delay(unsigned long int ms)
 {
     unsigned long long start_timer = game_time;
-    while ((double)((double)(game_time - start_timer) / (double)frequency) < ms)
+    while ((double)((double)(game_time - start_timer) / (double)frequency) < ((double)(ms) / 1000.0))
     {
     }
 }
@@ -114,7 +118,7 @@ int Timer::add_timed_callback(void (*cb)(void *), unsigned int ms, void *p)
         if (delay_callbacks[i] == (void (*)(void *))0x0)
         {
             delay_callbacks[i] = cb;
-            delay_callback_times[i] = game_time + ms * frequency;
+            delay_callback_times[i] = game_time + (unsigned int)((double)frequency * ((double)ms / 1000.0));
             delay_callback_p_arguments[i] = p;
             return i;
         }
