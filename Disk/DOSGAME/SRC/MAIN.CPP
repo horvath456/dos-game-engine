@@ -58,15 +58,18 @@ void main()
 
 		player.update_physics(delta_time);
 
-		screen.draw_background(background.get_buffer());
-
-		for (int i = 0; i < 20; i++)
+		if (Screen::is_in_vertical_retrace())
 		{
-			grass.draw(screen, i * 16, 200 - 16);
-		}
-		player.draw(screen);
+			screen.draw_background(background.get_buffer());
 
-		screen.draw_screen_buffer();
+			for (int i = 0; i < 20; i++)
+			{
+				grass.draw(screen, i * 16, 200 - 16);
+			}
+			player.draw(screen);
+
+			screen.draw_screen_buffer();
+		}
 
 		delta_time = timer.get_delta_time(game_time) * 10;
 		game_time = timer.get_time();

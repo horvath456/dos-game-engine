@@ -1,4 +1,6 @@
 #include "screen.h"
+
+#include <dos.h>
 #include "farmem.h"
 
 Screen::Screen()
@@ -96,4 +98,8 @@ void Screen::set_screen_mode(unsigned char mode)
         mov al, mode
         int 0x10
     }
+}
+
+int Screen::is_in_vertical_retrace() {
+    return inp(0x3DA) & 0x8;
 }
