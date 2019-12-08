@@ -15,6 +15,11 @@ Screen::~Screen()
     set_screen_mode(0x2);
 }
 
+unsigned char far *Screen::get_buffer(unsigned int x, unsigned int y)
+{
+    return screen_buffer + y * SCREEN_WIDTH + x;
+}
+
 void Screen::draw_screen_buffer()
 {
     unsigned char far *src = screen_buffer;

@@ -23,13 +23,20 @@ int Keyboard::check_if_pressed(unsigned char scancode)
 
 unsigned char Keyboard::get_last_action()
 {
-    unsigned char c = last_action;
+    return last_action;
+}
+
+void Keyboard::clear_last_action()
+{
     last_action = 0;
-    return c;
 }
 
 void Keyboard::init()
 {
+    asm {
+        mov ax, 0x0304
+        int 0x16
+    }
     old_handler = getvect(KEYBOARD_INT);
     setvect(KEYBOARD_INT, new_handler);
 }
@@ -37,6 +44,10 @@ void Keyboard::init()
 void Keyboard::deinit()
 {
     setvect(KEYBOARD_INT, old_handler);
+    asm {
+        mov ax, 0x0300
+        int 0x16
+    }
 }
 
 void far interrupt Keyboard::new_handler(...)

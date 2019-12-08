@@ -18,7 +18,8 @@ public:
     DrawObject(const char *filename);
     ~DrawObject();
 
-    void draw(Screen &screen, int x, int y);
+    // x >= 0 && y >= 0 && x+width<SCREEN_WIDTH && y+height<SCREEN_HEIGHT
+    void draw(Screen &screen, int x, int y, int transparent = 0);
 
     unsigned char far *get_buffer();
 

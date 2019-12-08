@@ -15,6 +15,7 @@ public:
     int check_if_pressed(unsigned char scancode);
 
     unsigned char get_last_action();
+    void clear_last_action();
 
 private:
     static void far interrupt (*old_handler)(...);

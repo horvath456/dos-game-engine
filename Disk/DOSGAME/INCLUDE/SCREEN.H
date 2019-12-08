@@ -3,6 +3,9 @@
 
 #pragma once
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 200
+
 class Screen
 {
 public:
@@ -12,6 +15,9 @@ public:
     void draw_screen_buffer();
 
     void clear_screen_buffer();
+
+    // x >= 0 && y >= 0 && x < SCREEN_WIDTH && y < SCREEN_HEIGHT
+    unsigned char far* get_buffer(unsigned int x, unsigned int y);
 
     void draw_background(unsigned char far *buf);
 

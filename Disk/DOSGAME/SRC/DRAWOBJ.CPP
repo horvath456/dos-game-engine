@@ -3,19 +3,78 @@
 #include "screen.h"
 #include <iostream.h>
 
-void DrawObject::draw(Screen &screen, int x, int y)
+void DrawObject::draw(Screen &screen, int x, int y, int transparent)
 {
-    for (int i = 0; i < height; i++)
+    unsigned char far *buf = buffer;
+    unsigned int w = width;
+    unsigned int h = height;
+    unsigned int add_w = SCREEN_WIDTH - width;
+    unsigned char far *screenbuf = screen.get_buffer(x, y);
+
+    asm {
+        push si 
+        push di 
+        push es 
+        push ds
+        push cx 
+        push dx 
+        push ax
+    }
+
+    if (transparent)
     {
-        if (y + i < 0 || y + i >= 200)
-            continue;
-        for (int j = 0; j < width; j++)
-        {
-            if (x + j < 0 || x + j >= 320)
-                continue;
-            if (pixel_at(j, i) != 0xFF)
-                screen.plot_pixel(x + j, y + i, pixel_at(j, i));
+        asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
         }
+    height_loop_1:
+        asm {
+            mov cx, w
+        }
+    width_loop_1:
+        asm {
+            lodsb
+            cmp al, 0xFF
+            je cont_loop_1
+            stosb
+            dec di
+        }
+    cont_loop_1:
+        asm {
+            inc di
+            dec cx
+            jnz width_loop_1
+            add di, add_w
+            dec dx
+            jnz height_loop_1
+        }
+    }
+    else
+    {
+        asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
+        }
+    height_loop_2:
+        asm {
+            mov cx, w
+            rep movsb
+            add di, add_w
+            dec dx
+            jnz height_loop_2
+        }
+    }
+
+    asm {
+        pop ax 
+        pop dx 
+        pop cx
+        pop ds 
+        pop es 
+        pop di 
+        pop si
     }
 }
 

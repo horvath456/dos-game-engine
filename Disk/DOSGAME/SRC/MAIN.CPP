@@ -16,7 +16,6 @@ void main()
 	Screen screen = Screen();
 	Timer timer = Timer(240);
 	Keyboard keyboard = Keyboard();
-
 	Adlib adlib = Adlib();
 
 	if (Adlib::check_if_adlib_present())
@@ -60,6 +59,7 @@ void main()
 		player.update_physics(delta_time);
 
 		screen.draw_background(background.get_buffer());
+
 		for (int i = 0; i < 20; i++)
 		{
 			grass.draw(screen, i * 16, 200 - 16);
