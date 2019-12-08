@@ -17,7 +17,7 @@ public:
     Adlib();
     ~Adlib();
 
-    void play_music(const char *filename, Timer &timer);
+    void play_music(const char *filename, Timer &timer, int loop=0);
     void stop_music();
 
     static int check_if_adlib_present();
@@ -37,6 +37,7 @@ private:
     static unsigned long int buffer_length;
     static Timer *timer;
     static Adlib *self;
+    static int music_looping;
 
     static int is_present;
 

@@ -17,7 +17,7 @@ Adlib::~Adlib()
     reset_card();
 }
 
-void Adlib::play_music(const char *filename, Timer &t)
+void Adlib::play_music(const char *filename, Timer &t, int loop)
 {
     fstream infile = fstream(filename, ios::in | ios::binary);
 
@@ -43,6 +43,7 @@ void Adlib::play_music(const char *filename, Timer &t)
     buffer_length = num_notes * 7;
     timer = &t;
     self = this;
+    music_looping = loop;
 
     self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
 
@@ -74,8 +75,13 @@ void Adlib::callback_handler(void *_)
 
         if (music_pos >= buffer_length)
         {
-            play_music_end();
-            return;
+            if (music_looping)
+                music_pos = 0;
+            else
+            {
+                play_music_end();
+                return;
+            }
         }
 
         game_time = timer->get_time();
@@ -192,5 +198,5 @@ unsigned long long Adlib::game_time;
 unsigned long int Adlib::buffer_length;
 Timer *Adlib::timer;
 Adlib *Adlib::self = NULL;
-
+int Adlib::music_looping = 0;
 int Adlib::is_present = -1;

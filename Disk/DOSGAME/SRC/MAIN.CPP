@@ -25,7 +25,7 @@ void main()
 
 	if (Adlib::check_if_adlib_present())
 	{
-		adlib.play_music("DATA\\SOUND.ADL", timer);
+		adlib.play_music("DATA\\SOUND.ADL", timer, 1);
 	}
 	else
 	{
