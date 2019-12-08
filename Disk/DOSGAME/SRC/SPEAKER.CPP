@@ -36,12 +36,21 @@ void Speaker::play_music(const char *filename, Timer &t)
     timer->add_callback(&callback_handler);
 }
 
+void Speaker::stop_music()
+{
+    if (is_music_playing)
+    {
+        play_music_end();
+    }
+}
+
 void Speaker::play_music_end()
 {
-    delete[] buffer;
     timer->remove_callback(&callback_handler);
     stop();
     is_music_playing = FALSE;
+    delete[] buffer;
+    buffer = NULL;
 }
 
 void Speaker::callback_handler()
