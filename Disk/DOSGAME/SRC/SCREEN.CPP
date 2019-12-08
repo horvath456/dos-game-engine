@@ -4,7 +4,7 @@
 #include <iostream.h>
 #include "farmem.h"
 
-#define NO_DOUBLE_BUFFER
+//#define NO_DOUBLE_BUFFER
 
 Screen::Screen()
 {
