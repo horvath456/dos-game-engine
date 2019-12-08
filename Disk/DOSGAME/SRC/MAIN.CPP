@@ -24,12 +24,16 @@ void main()
 		adlib.play(1, 300, 3, 1);
 		sleep(1);
 		adlib.stop(1);
-	} else {
+	}
+	else
+	{
 		cout << "Speaker detected!!" << endl;
 		Speaker::play(300);
 		sleep(1);
 		Speaker::stop();
 	}
+
+	Speaker::play_music("DATA\\SOUND.SPK", timer);
 
 	Palette::load_palette("DATA\\PALETTE.DAT");
 

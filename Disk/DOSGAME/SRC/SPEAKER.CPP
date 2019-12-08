@@ -1,6 +1,60 @@
 #include "speaker.h"
 
+#include "timer.h"
 #include <dos.h>
+#include <fstream.h>
+
+#define TRUE 1
+#define FALSE 0
+
+void Speaker::play_music(const char *filename, Timer &t)
+{
+    fstream infile = fstream(filename, ios::in | ios::binary);
+
+    unsigned char buf[4];
+
+    infile.get(buf[0]);
+    infile.get(buf[1]);
+
+    unsigned int num_notes = (buf[0] << 8) + buf[1];
+
+    buffer = new far unsigned char[(unsigned int)(num_notes * 4)];
+
+    for (int i = 0; i < num_notes * 4; i++)
+    {
+        unsigned char c;
+        infile.get(c);
+        buffer[i] = c;
+    }
+
+    is_music_playing = TRUE;
+    music_pos = 0;
+    game_time = t.get_time();
+    buffer_length = num_notes * 4;
+    timer = &t;
+
+    timer->set_callback(&callback_handler);
+}
+
+void Speaker::play_music_end()
+{
+    delete[] buffer;
+    timer->set_callback((void *)0x0);
+    stop();
+    is_music_playing = FALSE;
+}
+
+void Speaker::callback_handler()
+{
+    if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
+    {
+        game_time = timer->get_time();
+        play((buffer[music_pos] << 8) + buffer[music_pos + 1]);
+        music_pos += 4;
+    }
+    if (music_pos >= buffer_length)
+        play_music_end();
+}
 
 //Play sound using built in speaker
 void Speaker::play(unsigned long int freq)
@@ -25,3 +79,10 @@ void Speaker::stop()
     unsigned char tmp = inp(0x61) & 0xFC;
     outp(0x61, tmp);
 }
+
+unsigned char far *Speaker::buffer;
+int Speaker::is_music_playing;
+unsigned int Speaker::music_pos;
+unsigned long long Speaker::game_time;
+unsigned long int Speaker::buffer_length;
+Timer *Speaker::timer;

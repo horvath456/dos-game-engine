@@ -19,11 +19,14 @@ public:
 
     void delay(unsigned long int ms);
 
+    void set_callback(void (*cb)(void));
+
 private:
     static void far interrupt (*old_handler)(...);
     static long int clock_ticks, counter;
     static unsigned long long game_time;
     static unsigned int frequency;
+    static void (*callback)(void);
 
     static void far interrupt new_handler(...);
 
