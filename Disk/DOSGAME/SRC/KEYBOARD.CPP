@@ -82,4 +82,4 @@ void far interrupt Keyboard::new_handler(...)
 
 void far interrupt (*Keyboard::old_handler)(...);
 unsigned char *Keyboard::pressed_mask;
-unsigned char Keyboard::last_action;
+unsigned char Keyboard::last_action = 0x0;

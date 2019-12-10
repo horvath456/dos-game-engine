@@ -16,7 +16,7 @@
 void main()
 {
 	Screen screen = Screen();
-	
+
 	Adlib::init_adlib();
 	Keyboard::init_keyboard();
 	Timer::init_timer(1000);
@@ -59,6 +59,9 @@ void main()
 
 		player.update_physics(delta_time);
 
+		while (!Screen::is_in_vertical_retrace())
+			;
+
 		screen.draw_background(background.get_buffer());
 
 		for (int i = 0; i < 20; i++)
@@ -71,9 +74,6 @@ void main()
 
 		delta_time = Timer::get_delta_time(game_time) * DELTA_TIME_FACTOR;
 		game_time = Timer::get_time();
-
-		while (!Screen::is_in_vertical_retrace())
-			;
 	}
 
 	Keyboard::deinit_keyboard();

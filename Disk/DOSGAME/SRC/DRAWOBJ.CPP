@@ -117,13 +117,6 @@ DrawObject::DrawObject(const char *filename)
     }
 }
 
-DrawObject::DrawObject(unsigned int width, unsigned int height)
-{
-    this->width = width;
-    this->height = height;
-    this->buffer = new far unsigned char[width * height];
-}
-
 unsigned char far *DrawObject::get_buffer()
 {
     return buffer;

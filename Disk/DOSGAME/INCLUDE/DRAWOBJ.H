@@ -8,13 +8,9 @@
 
 #include "screen.h"
 
-#define DEFAULT_WIDTH 16
-#define DEFAULT_HEIGHT 16
-
 class DrawObject
 {
 public:
-    DrawObject(unsigned int width = DEFAULT_WIDTH, unsigned int height = DEFAULT_HEIGHT);
     DrawObject(const char *filename);
     ~DrawObject();
 
