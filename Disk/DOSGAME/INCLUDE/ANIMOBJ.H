@@ -12,21 +12,21 @@
 class AnimationObject
 {
 public:
-    AnimationObject(unsigned int numframes, const char **filenames);
+    AnimationObject(unsigned int numframes, const char *filename);
     ~AnimationObject();
 
     // x >= 0 && y >= 0 && x+width<SCREEN_WIDTH && y+height<SCREEN_HEIGHT
-    void draw(Screen &screen, int x, int y, int transparent = 1);
+    void draw(Screen &screen, int x, int y);
 
     unsigned int frame;
 
 private:
-    unsigned int width;
-    unsigned int height;
-    
     unsigned int num_frames;
 
-    DrawObject **draw_objects;
+    unsigned int width;
+    unsigned int height;
+
+    unsigned char far *buffer;
 }
 
 #endif
