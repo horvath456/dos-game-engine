@@ -7,7 +7,7 @@
 #define TRUE 1
 #define FALSE 0
 
-void Speaker::play_music(const char *filename, Timer &t)
+void Speaker::play_music(const char *filename)
 {
     fstream infile = fstream(filename, ios::in | ios::binary);
 
@@ -29,11 +29,9 @@ void Speaker::play_music(const char *filename, Timer &t)
 
     is_music_playing = TRUE;
     music_pos = 0;
-    game_time = t.get_time();
+    game_time = Timer::get_time();
     buffer_length = num_notes * 4;
-    timer = &t;
-
-    timer->add_callback(&callback_handler, (void *)0x0);
+    Timer::add_callback(&callback_handler, (void *)0x0);
 }
 
 void Speaker::stop_music()
@@ -46,7 +44,7 @@ void Speaker::stop_music()
 
 void Speaker::play_music_end()
 {
-    timer->remove_callback(&callback_handler);
+    Timer::remove_callback(&callback_handler);
     stop();
     is_music_playing = FALSE;
     delete[] buffer;
@@ -55,9 +53,9 @@ void Speaker::play_music_end()
 
 void Speaker::callback_handler(void *_)
 {
-    if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
+    if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
     {
-        game_time = timer->get_time();
+        game_time = Timer::get_time();
         play((buffer[music_pos] << 8) + buffer[music_pos + 1]);
         music_pos += 4;
     }
@@ -94,4 +92,3 @@ int Speaker::is_music_playing;
 unsigned int Speaker::music_pos;
 unsigned long long Speaker::game_time;
 unsigned long int Speaker::buffer_length;
-Timer *Speaker::timer;

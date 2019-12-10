@@ -4,13 +4,13 @@
 #include <mem.h>
 #include <iostream.h>
 
-Timer::Timer(unsigned int freq)
+void Timer::init_timer(unsigned int freq)
 {
     frequency = freq;
     Timer::set_timer(freq);
 }
 
-Timer::~Timer()
+void Timer::deinit_timer()
 {
     reset_timer();
 }

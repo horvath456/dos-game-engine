@@ -9,24 +9,21 @@
 class Keyboard
 {
 public:
-    Keyboard();
-    ~Keyboard();
+    static void init_keyboard();
+    static void deinit_keyboard();
 
-    int check_if_pressed(unsigned char scancode);
+    static int check_if_pressed(unsigned char scancode);
 
-    unsigned char get_last_action();
-    void clear_last_action();
+    static unsigned char get_last_action();
+    static void clear_last_action();
 
-    int get_key_up(unsigned char scancode);
-    int get_key_down(unsigned char scancode);
+    static int get_key_up(unsigned char scancode);
+    static int get_key_down(unsigned char scancode);
 
 private:
     static void far interrupt (*old_handler)(...);
 
     static void far interrupt new_handler(...);
-
-    static void init();
-    static void deinit();
 
     static unsigned char *pressed_mask;
     static unsigned char last_action;

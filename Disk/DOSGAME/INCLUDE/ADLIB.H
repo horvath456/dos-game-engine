@@ -14,17 +14,17 @@
 class Adlib
 {
 public:
-    Adlib();
-    ~Adlib();
+    static void init_adlib();
+    static void reset_card();
 
-    void play_music(const char *filename, Timer &timer, int loop=0);
-    void stop_music();
+    static void play_music(const char *filename, int loop = 0);
+    static void stop_music();
 
     static int check_if_adlib_present();
 
-    void play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform);
+    static void play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform);
 
-    void stop(unsigned char channel);
+    static void stop(unsigned char channel);
 
 private:
     static void callback_handler(void *_);
@@ -44,8 +44,7 @@ private:
     static void write_register(unsigned char num, unsigned char value);
     static unsigned char read_status_register();
     static void delay_using_read(unsigned int iterations);
-    static void reset_card();
-    static void init();
+
     static unsigned char calc_register_offset(unsigned char channel);
 };
 

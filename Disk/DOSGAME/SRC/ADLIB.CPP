@@ -6,18 +6,8 @@
 #include <iostream.h>
 #include "timer.h"
 
-Adlib::Adlib()
-{
-    reset_card();
-    init();
-}
 
-Adlib::~Adlib()
-{
-    reset_card();
-}
-
-void Adlib::play_music(const char *filename, Timer &t, int loop)
+void Adlib::play_music(const char *filename, int loop)
 {
     fstream infile = fstream(filename, ios::in | ios::binary);
 
@@ -39,15 +29,13 @@ void Adlib::play_music(const char *filename, Timer &t, int loop)
 
     is_music_playing = TRUE;
     music_pos = 0;
-    game_time = t.get_time();
+    game_time = Timer::get_time();
     buffer_length = num_notes * 7;
-    timer = &t;
-    self = this;
     music_looping = loop;
 
-    self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+    play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
 
-    timer->add_callback(&callback_handler, (void *)0x0);
+    Timer::add_callback(&callback_handler, (void *)0x0);
 }
 
 void Adlib::stop_music()
@@ -60,8 +48,8 @@ void Adlib::stop_music()
 
 void Adlib::play_music_end()
 {
-    timer->remove_callback(&callback_handler);
-    self->stop(1);
+    Timer::remove_callback(&callback_handler);
+    stop(1);
     is_music_playing = FALSE;
     delete[] buffer;
     buffer = NULL;
@@ -69,7 +57,7 @@ void Adlib::play_music_end()
 
 void Adlib::callback_handler(void *_)
 {
-    if (timer->get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
+    if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
     {
         music_pos += 7;
 
@@ -84,9 +72,9 @@ void Adlib::callback_handler(void *_)
             }
         }
 
-        game_time = timer->get_time();
+        game_time = Timer::get_time();
 
-        self->play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+        play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
     }
 }
 
@@ -144,8 +132,9 @@ int Adlib::check_if_adlib_present()
     }
 }
 
-void Adlib::init()
+void Adlib::init_adlib()
 {
+    reset_card();
     write_register(0x1, 32);
     write_register(0xB0, 0x11);
     write_register(0x4, 0x60);
@@ -196,7 +185,5 @@ int Adlib::is_music_playing;
 unsigned int Adlib::music_pos;
 unsigned long long Adlib::game_time;
 unsigned long int Adlib::buffer_length;
-Timer *Adlib::timer;
-Adlib *Adlib::self = NULL;
 int Adlib::music_looping = 0;
 int Adlib::is_present = -1;

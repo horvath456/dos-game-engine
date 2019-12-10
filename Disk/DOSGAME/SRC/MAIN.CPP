@@ -16,20 +16,21 @@
 void main()
 {
 	Screen screen = Screen();
-	Timer timer = Timer(1000);
-	Keyboard keyboard = Keyboard();
-	Adlib adlib = Adlib();
+	
+	Adlib::init_adlib();
+	Keyboard::init_keyboard();
+	Timer::init_timer(1000);
 
 	Palette palette = Palette();
 	palette.load_palette_file("DATA\\PALETTE.DAT");
 
 	if (Adlib::check_if_adlib_present())
 	{
-		adlib.play_music("DATA\\SOUND.ADL", timer, 1);
+		Adlib::play_music("DATA\\SOUND.ADL");
 	}
 	else
 	{
-		Speaker::play_music("DATA\\SOUND.SPK", timer);
+		Speaker::play_music("DATA\\SOUND.SPK");
 	}
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
@@ -40,20 +41,20 @@ void main()
 	palette.blackout_palette();
 	palette.fade_in();
 
-	unsigned long long game_time = timer.get_time();
+	unsigned long long game_time = Timer::get_time();
 	double delta_time = 0;
 
 	while (1 == 1)
 	{
-		if (keyboard.check_if_pressed(1))
+		if (Keyboard::check_if_pressed(1))
 			break;
 
-		if (keyboard.check_if_pressed(75))
+		if (Keyboard::check_if_pressed(75))
 			player.target_velocity.x = -1;
-		if (keyboard.check_if_pressed(77))
+		if (Keyboard::check_if_pressed(77))
 			player.target_velocity.x = 1;
 
-		if (keyboard.get_key_down(57))
+		if (Keyboard::get_key_down(57))
 			player.target_velocity.y = -1;
 
 		player.update_physics(delta_time);
@@ -68,10 +69,14 @@ void main()
 
 		screen.draw_screen_buffer();
 
-		delta_time = timer.get_delta_time(game_time) * DELTA_TIME_FACTOR;
-		game_time = timer.get_time();
+		delta_time = Timer::get_delta_time(game_time) * DELTA_TIME_FACTOR;
+		game_time = Timer::get_time();
 
 		while (!Screen::is_in_vertical_retrace())
 			;
 	}
+
+	Keyboard::deinit_keyboard();
+	Timer::deinit_timer();
+	Adlib::reset_card();
 }

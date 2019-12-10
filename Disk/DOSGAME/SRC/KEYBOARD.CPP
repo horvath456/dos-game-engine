@@ -4,16 +4,26 @@
 #include <iostream.h>
 #include "farmem.h"
 
-Keyboard::Keyboard()
+void Keyboard::init_keyboard()
 {
-    init();
+    asm {
+        mov ax, 0x0304
+        int 0x16
+    }
+    old_handler = getvect(KEYBOARD_INT);
+    setvect(KEYBOARD_INT, new_handler);
+
     pressed_mask = new unsigned char[256];
     fmemset(pressed_mask, 256, 0);
 }
 
-Keyboard::~Keyboard()
+void Keyboard::deinit_keyboard()
 {
-    deinit();
+    setvect(KEYBOARD_INT, old_handler);
+    asm {
+        mov ax, 0x0300
+        int 0x16
+    }
 }
 
 int Keyboard::check_if_pressed(unsigned char scancode)
@@ -51,25 +61,6 @@ int Keyboard::get_key_up(unsigned char scancode)
     }
     else
         return 0;
-}
-
-void Keyboard::init()
-{
-    asm {
-        mov ax, 0x0304
-        int 0x16
-    }
-    old_handler = getvect(KEYBOARD_INT);
-    setvect(KEYBOARD_INT, new_handler);
-}
-
-void Keyboard::deinit()
-{
-    setvect(KEYBOARD_INT, old_handler);
-    asm {
-        mov ax, 0x0300
-        int 0x16
-    }
 }
 
 void far interrupt Keyboard::new_handler(...)

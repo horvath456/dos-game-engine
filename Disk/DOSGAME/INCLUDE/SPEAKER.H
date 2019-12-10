@@ -8,7 +8,7 @@
 class Speaker
 {
 public:
-    static void play_music(const char *filename, Timer &timer);
+    static void play_music(const char *filename);
     static void stop_music();
     static void play(unsigned long int freq);
     static void stop();
@@ -22,7 +22,6 @@ private:
     static unsigned int music_pos;
     static unsigned long long game_time;
     static unsigned long int buffer_length;
-    static Timer *timer;
 };
 
 #endif
