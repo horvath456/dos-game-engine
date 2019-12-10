@@ -3,34 +3,30 @@
 #include "timer.h"
 #include <dos.h>
 #include <fstream.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
 
-void Speaker::play_music(const char *filename)
+void Speaker::play_music(const char *play_string)
 {
-    fstream infile = fstream(filename, ios::in | ios::binary);
+    unsigned int num_bytes = strlen(play_string);
 
-    unsigned char buf[4];
+    buffer = new far unsigned char[(unsigned int)(num_bytes)];
 
-    infile.get(buf[0]);
-    infile.get(buf[1]);
+    unsigned int size = num_bytes;
 
-    unsigned int num_notes = (buf[0] << 8) + buf[1];
-
-    buffer = new far unsigned char[(unsigned int)(num_notes * 4)];
-
-    for (int i = 0; i < num_notes * 4; i++)
-    {
-        unsigned char c;
-        infile.get(c);
-        buffer[i] = c;
-    }
+    while (size-- != 0)
+        *buffer++ = *play_string++;
 
     is_music_playing = TRUE;
     music_pos = 0;
     game_time = Timer::get_time();
-    buffer_length = num_notes * 4;
+    buffer_length = num_bytes;
+
+    stop_music();
+    stop();
+
     Timer::add_callback(&callback_handler, (void *)0x0);
 }
 

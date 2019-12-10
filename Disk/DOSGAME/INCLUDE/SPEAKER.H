@@ -8,7 +8,7 @@
 class Speaker
 {
 public:
-    static void play_music(const char *filename);
+    static void play_music(const char *play_string);
     static void stop_music();
     static void play(unsigned long int freq);
     static void stop();

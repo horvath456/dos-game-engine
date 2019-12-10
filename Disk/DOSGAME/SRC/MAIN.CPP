@@ -17,21 +17,13 @@ void main()
 {
 	Screen screen = Screen();
 
-	Adlib::init_adlib();
+	if (Adlib::check_if_adlib_present())
+		Adlib::init_adlib();
 	Keyboard::init_keyboard();
 	Timer::init_timer(1000);
 
 	Palette palette = Palette();
 	palette.load_palette_file("DATA\\PALETTE.DAT");
-
-	if (Adlib::check_if_adlib_present())
-	{
-		Adlib::play_music("DATA\\SOUND.ADL");
-	}
-	else
-	{
-		Speaker::play_music("DATA\\SOUND.SPK");
-	}
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
@@ -78,5 +70,6 @@ void main()
 
 	Keyboard::deinit_keyboard();
 	Timer::deinit_timer();
-	Adlib::reset_card();
+	if (Adlib::check_if_adlib_present())
+		Adlib::reset_card();
 }
