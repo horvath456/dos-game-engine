@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <dos.h>
-
 #define TIMEINT 0x8
 
 class Timer
@@ -25,7 +23,7 @@ public:
     static void remove_timed_callback(int handle);
 
 private:
-    static void far interrupt (*old_handler)(...);
+    static void far __interrupt (*old_handler)();
     static long int clock_ticks, counter;
     static unsigned long long game_time;
     static unsigned int frequency;
@@ -37,7 +35,7 @@ private:
     static unsigned long long delay_callback_times[10];
     static void *delay_callback_p_arguments[10];
 
-    static void far interrupt new_handler(...);
+    static void far __interrupt new_handler();
 
     static void set_timer(int frate);
     static void reset_timer();

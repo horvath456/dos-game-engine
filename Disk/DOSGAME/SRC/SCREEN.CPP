@@ -1,10 +1,13 @@
 #include "screen.h"
 
 #include <dos.h>
-#include <iostream.h>
-#include "farmem.h"
+#include <stdio>
+#include <conio.h>
+#include <string.h>
 
 //#define NO_DOUBLE_BUFFER
+
+using namespace std;
 
 Screen::Screen()
 {
@@ -12,7 +15,7 @@ Screen::Screen()
 #ifdef NO_DOUBLE_BUFFER
     screen_buffer = screen_memory;
 #else
-    screen_buffer = new far unsigned char[64000];
+    screen_buffer = new unsigned char[64000];
 #endif
     set_screen_mode(0x13);
     clear_screen_buffer();
@@ -36,7 +39,7 @@ void Screen::draw_screen_buffer()
 #ifndef NO_DOUBLE_BUFFER
     unsigned char far *src = screen_buffer;
     unsigned char far *dst = screen_memory;
-    asm {
+    _asm {
         push ds
         push es
         push cx
@@ -58,7 +61,7 @@ void Screen::draw_screen_buffer()
 void Screen::clear_screen_buffer()
 {
     unsigned char far *dst = screen_buffer;
-    asm {
+    _asm {
         push ds
         push es
         push cx
@@ -79,7 +82,7 @@ void Screen::clear_screen_buffer()
 void Screen::draw_background(unsigned char far *buf)
 {
     unsigned char far *dst = screen_buffer;
-    asm {
+    _asm {
         push ds
         push es
         push cx
@@ -104,7 +107,7 @@ void Screen::plot_pixel(unsigned int x, unsigned int y, unsigned char color)
 
 void Screen::set_screen_mode(unsigned char mode)
 {
-    asm {
+    _asm {
         xor ah, ah
         mov al, mode
         int 0x10

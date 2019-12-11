@@ -1,7 +1,10 @@
 #include "animobj.h"
 
+#include <fstream>
 #include "screen.h"
 #include "drawobj.h"
+
+using namespace std;
 
 AnimationObject::AnimationObject(unsigned int numframes, const char *filename)
 {
@@ -25,7 +28,7 @@ AnimationObject::AnimationObject(unsigned int numframes, const char *filename)
     if (width > 320)
         width = 320;
 
-    buffer = new far unsigned char[(unsigned int)(num_frames * width * height)];
+    buffer = new unsigned char[(unsigned int)(num_frames * width * height)];
 
     for (unsigned int i = 0; i < numframes * width * height; i++)
     {
@@ -48,30 +51,40 @@ void AnimationObject::draw(Screen &screen, int x, int y)
     unsigned int h = height;
     unsigned int add_w = SCREEN_WIDTH - width;
     unsigned char far *buf = buf + ((w * h) * fr);
-    asm {
-            mov dx, h
-            lds si, [buf]
-            les di, [screenbuf]
-    }
-height_loop_1:
-    asm {
-            mov cx, w
-    }
-width_loop_1:
-    asm {
-            lodsb
-            cmp al, 0xFF
-            je cont_loop_1
-            stosb
-            dec di
-    }
-cont_loop_1:
-    asm {
-            inc di
-            dec cx
-            jnz width_loop_1
-            add di, add_w
-            dec dx
-            jnz height_loop_1
+    _asm {
+        push dx 
+        push si 
+        push di 
+        push es 
+        push ds 
+        push cx 
+        push ax
+
+        mov dx, h
+        lds si, [buf]
+        les di, [screenbuf]
+    height_loop_1:
+        mov cx, w
+    width_loop_1:
+        lodsb
+        cmp al, 0xFF
+        je cont_loop_1
+        stosb
+        dec di
+    cont_loop_1:
+        inc di
+        dec cx
+        jnz width_loop_1
+        add di, add_w
+        dec dx
+        jnz height_loop_1
+
+        pop ax 
+        pop cx 
+        pop ds 
+        pop es 
+        pop di 
+        pop si 
+        pop dx
     }
 }

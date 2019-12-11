@@ -3,9 +3,6 @@
 
 #pragma once
 
-#include <fstream.h>
-#include <iostream.h>
-
 #include "screen.h"
 
 class DrawObject

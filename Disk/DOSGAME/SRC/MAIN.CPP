@@ -1,4 +1,4 @@
-#include <iostream.h>
+#include <stdio>
 #include <conio.h>
 #include <dos.h>
 
@@ -13,7 +13,9 @@
 
 #define DELTA_TIME_FACTOR 15
 
-void main()
+using namespace std;
+
+int main()
 {
 	Screen screen = Screen();
 
@@ -72,4 +74,6 @@ void main()
 	Timer::deinit_timer();
 	if (Adlib::check_if_adlib_present())
 		Adlib::reset_card();
+
+	return 0;
 }

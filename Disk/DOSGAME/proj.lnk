@@ -1,0 +1,10 @@
+name main.exe 
+file adlib.obj
+file animobj.obj
+file drawobj.obj
+file keyboard.obj
+file main.obj
+file palette.obj
+file player.obj
+file screen.obj
+file timer.obj

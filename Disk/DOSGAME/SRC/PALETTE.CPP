@@ -1,13 +1,15 @@
 #include "palette.h"
 
-#include <fstream.h>
-#include <dos.h>
+#include <fstream>
+#include <conio.h>
 #include "screen.h"
 #include "timer.h"
 
+using namespace std;
+
 Palette::Palette()
 {
-    palette = new far unsigned char[768];
+    palette = new unsigned char[768];
 }
 
 Palette::~Palette()
@@ -35,7 +37,7 @@ void Palette::load_palette_file(const char *filename)
 void Palette::load_palette()
 {
     while (!Screen::is_in_vertical_retrace())
-            ;
+        ;
     for (unsigned int i = 0; i < 256; i++)
     {
         set_pal(i, palette[i * 3], palette[i * 3 + 1], palette[i * 3 + 2]);
@@ -45,7 +47,7 @@ void Palette::load_palette()
 void Palette::blackout_palette()
 {
     while (!Screen::is_in_vertical_retrace())
-            ;
+        ;
     for (unsigned int i = 0; i < 256; i++)
     {
         set_pal(i, 0x0, 0x0, 0x0);

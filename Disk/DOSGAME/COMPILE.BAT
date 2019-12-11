@@ -1,6 +1,22 @@
 cls
-set path=Z:\;C:\TURBOC3\BIN;C:\TURBOC3\INCLUDE;C:\TURBOC3\LIB;C:\DOSGAME\INCLUDE
+set path=Z:\;C:\WATCOM\BINW;C:\DOSGAME\INCLUDE
+SET INCLUDE=C:\WATCOM\H;C:\DOSGAME\INCLUDE
+SET WATCOM=C:\WATCOM
+SET EDPATH=C:\WATCOM\EDDAT
+SET WIPFC=C:\WATCOM\WIPFC
 rescan
 mkdir build
-TCC -2 -G -P -nBUILD -eMAIN.EXE -IC:\TURBOC3\INCLUDE;C:\DOSGAME\INCLUDE -LC:\TURBOC3\LIB SRC\*.CPP
-copy BUILD\MAIN.EXE .\MAIN.EXE
+del build\*.*
+cd build
+wpp -ml ..\src\adlib.cpp 
+wpp -ml ..\src\animobj.cpp
+wpp -ml ..\src\drawobj.cpp
+wpp -ml ..\src\keyboard.cpp
+wpp -ml ..\src\main.cpp
+wpp -ml ..\src\palette.cpp
+wpp -ml ..\src\player.cpp
+wpp -ml ..\src\screen.cpp
+wpp -ml ..\src\timer.cpp
+wlink @..\proj.lnk
+cd ..
+copy build\main.exe main.exe

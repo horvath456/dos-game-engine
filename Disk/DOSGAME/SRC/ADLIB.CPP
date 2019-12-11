@@ -1,11 +1,13 @@
 #include "adlib.h"
 
 #include <dos.h>
-#include <time.h>
-#include <fstream.h>
-#include <iostream.h>
+#include <conio.h>
+#include <fstream>
+#include <stdio>
+#include <stdlib>
 #include "timer.h"
 
+using namespace std;
 
 void Adlib::play_music(const char *filename, int loop)
 {
@@ -18,7 +20,7 @@ void Adlib::play_music(const char *filename, int loop)
 
     unsigned int num_notes = (buf[0] << 8) + buf[1];
 
-    buffer = new far unsigned char[(unsigned int)(num_notes * 7)];
+    buffer = new unsigned char[(unsigned int)(num_notes * 7)];
 
     for (int i = 0; i < num_notes * 7; i++)
     {
@@ -180,7 +182,7 @@ void Adlib::reset_card()
     write_register(0xBD, 0x10);
 }
 
-unsigned char far *Adlib::buffer;
+unsigned char far*Adlib::buffer;
 int Adlib::is_music_playing;
 unsigned int Adlib::music_pos;
 unsigned long long Adlib::game_time;

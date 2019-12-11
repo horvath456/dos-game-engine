@@ -1,26 +1,27 @@
 #include "keyboard.h"
 
 #include <dos.h>
-#include <iostream.h>
-#include "farmem.h"
+#include <stdio>
+#include <conio.h>
+#include <string.h>
 
 void Keyboard::init_keyboard()
 {
-    asm {
+    _asm {
         mov ax, 0x0304
         int 0x16
     }
-    old_handler = getvect(KEYBOARD_INT);
-    setvect(KEYBOARD_INT, new_handler);
+    old_handler = _dos_getvect(KEYBOARD_INT);
+    _dos_setvect(KEYBOARD_INT, new_handler);
 
     pressed_mask = new unsigned char[256];
-    fmemset(pressed_mask, 256, 0);
+    memset(pressed_mask, 256, 0);
 }
 
 void Keyboard::deinit_keyboard()
 {
-    setvect(KEYBOARD_INT, old_handler);
-    asm {
+    _dos_setvect(KEYBOARD_INT, old_handler);
+    _asm {
         mov ax, 0x0300
         int 0x16
     }
@@ -63,7 +64,7 @@ int Keyboard::get_key_up(unsigned char scancode)
         return 0;
 }
 
-void far interrupt Keyboard::new_handler(...)
+void far __interrupt Keyboard::new_handler()
 {
     unsigned char byte = inp(KEYBOARD_PORT);
     if ((byte & 0x80))
@@ -80,6 +81,6 @@ void far interrupt Keyboard::new_handler(...)
     outp(0x20, 0x20);
 }
 
-void far interrupt (*Keyboard::old_handler)(...);
+void far __interrupt (*Keyboard::old_handler)();
 unsigned char *Keyboard::pressed_mask;
 unsigned char Keyboard::last_action = 0x0;

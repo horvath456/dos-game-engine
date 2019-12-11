@@ -3,11 +3,7 @@
 
 #pragma once
 
-#include <fstream.h>
-#include <iostream.h>
-
 #include "screen.h"
-#include "drawobj.h"
 
 class AnimationObject
 {
@@ -27,6 +23,6 @@ private:
     unsigned int height;
 
     unsigned char far *buffer;
-}
+};
 
 #endif

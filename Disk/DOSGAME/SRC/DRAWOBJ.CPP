@@ -1,7 +1,9 @@
 #include "drawobj.h"
 
+#include <fstream>
 #include "screen.h"
-#include <iostream.h>
+
+using namespace std;
 
 void DrawObject::draw(Screen &screen, int x, int y, int transparent)
 {
@@ -11,7 +13,7 @@ void DrawObject::draw(Screen &screen, int x, int y, int transparent)
     unsigned int add_w = SCREEN_WIDTH - width;
     unsigned char far *screenbuf = screen.get_buffer(x, y);
 
-    asm {
+    _asm {
         push si 
         push di 
         push es 
@@ -23,25 +25,19 @@ void DrawObject::draw(Screen &screen, int x, int y, int transparent)
 
     if (transparent)
     {
-        asm {
+        _asm {
             mov dx, h
             lds si, [buf]
             les di, [screenbuf]
-        }
-    height_loop_1:
-        asm {
+        height_loop_1:
             mov cx, w
-        }
-    width_loop_1:
-        asm {
+        width_loop_1:
             lodsb
             cmp al, 0xFF
             je cont_loop_1
             stosb
             dec di
-        }
-    cont_loop_1:
-        asm {
+        cont_loop_1:
             inc di
             dec cx
             jnz width_loop_1
@@ -52,13 +48,11 @@ void DrawObject::draw(Screen &screen, int x, int y, int transparent)
     }
     else
     {
-        asm {
+        _asm {
             mov dx, h
             lds si, [buf]
             les di, [screenbuf]
-        }
-    height_loop_2:
-        asm {
+        height_loop_2:
             mov cx, w
             rep movsb
             add di, add_w
@@ -67,7 +61,7 @@ void DrawObject::draw(Screen &screen, int x, int y, int transparent)
         }
     }
 
-    asm {
+    _asm {
         pop ax 
         pop dx 
         pop cx
@@ -85,7 +79,7 @@ unsigned char DrawObject::pixel_at(unsigned int x, unsigned int y)
 
 DrawObject::~DrawObject()
 {
-    delete[] this->buffer;
+    delete[] buffer;
 }
 
 DrawObject::DrawObject(const char *filename)
@@ -107,13 +101,13 @@ DrawObject::DrawObject(const char *filename)
     if (width > 320)
         width = 320;
 
-    this->buffer = new far unsigned char[(unsigned int)(width * height)];
+    buffer = new unsigned char[(unsigned int)(width * height)];
 
     for (unsigned int i = 0; i < width * height; i++)
     {
         unsigned char c;
         infile.get(c);
-        this->buffer[i] = c;
+        buffer[i] = c;
     }
 }
 

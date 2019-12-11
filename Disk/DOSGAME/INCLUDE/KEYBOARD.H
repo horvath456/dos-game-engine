@@ -21,9 +21,9 @@ public:
     static int get_key_down(unsigned char scancode);
 
 private:
-    static void far interrupt (*old_handler)(...);
+    static void far __interrupt (*old_handler)();
 
-    static void far interrupt new_handler(...);
+    static void far __interrupt new_handler();
 
     static unsigned char *pressed_mask;
     static unsigned char last_action;
