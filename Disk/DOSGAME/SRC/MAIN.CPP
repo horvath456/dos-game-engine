@@ -11,10 +11,6 @@
 #include "keyboard.h"
 #include "speaker.h"
 
-#define DELTA_TIME_FACTOR 15
-
-using namespace std;
-
 int main()
 {
 	Screen screen = Screen();
@@ -40,6 +36,12 @@ int main()
 
 	while (1 == 1)
 	{
+		while (!Screen::is_in_vertical_retrace())
+			;
+
+		delta_time = Timer::get_delta_time(game_time);
+		game_time = Timer::get_time();
+
 		if (Keyboard::check_if_pressed(1))
 			break;
 
@@ -53,9 +55,6 @@ int main()
 
 		player.update_physics(delta_time);
 
-		while (!Screen::is_in_vertical_retrace())
-			;
-
 		screen.draw_background(background.get_buffer());
 
 		for (int i = 0; i < 20; i++)
@@ -65,9 +64,6 @@ int main()
 		player.draw(screen);
 
 		screen.draw_screen_buffer();
-
-		delta_time = Timer::get_delta_time(game_time) * DELTA_TIME_FACTOR;
-		game_time = Timer::get_time();
 	}
 
 	Keyboard::deinit_keyboard();
