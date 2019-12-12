@@ -5,27 +5,19 @@
 #include <conio.h>
 #include <string.h>
 
-//#define NO_DOUBLE_BUFFER
-
 using namespace std;
 
 Screen::Screen()
 {
     screen_memory = (unsigned char far *)0xA0000000L;
-#ifdef NO_DOUBLE_BUFFER
-    screen_buffer = screen_memory;
-#else
     screen_buffer = new unsigned char[64000];
-#endif
     set_screen_mode(0x13);
     clear_screen_buffer();
 }
 
 Screen::~Screen()
 {
-#ifndef NO_DOUBLE_BUFFER
     delete[] screen_buffer;
-#endif
     set_screen_mode(0x2);
 }
 
@@ -36,7 +28,6 @@ unsigned char far *Screen::get_buffer(unsigned int x, unsigned int y)
 
 void Screen::draw_screen_buffer()
 {
-#ifndef NO_DOUBLE_BUFFER
     unsigned char far *src = screen_buffer;
     unsigned char far *dst = screen_memory;
     _asm {
@@ -55,7 +46,6 @@ void Screen::draw_screen_buffer()
         pop es
         pop ds
     }
-#endif
 }
 
 void Screen::clear_screen_buffer()
