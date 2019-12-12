@@ -5,19 +5,18 @@
 
 namespace Timer
 {
-    void init_timer(unsigned int freq);
-    void deinit_timer();
+void init_timer(unsigned int freq);
+void deinit_timer();
 
-    unsigned long long get_time();
-    double get_delta_time(unsigned long long d);
+unsigned long long get_time();
+double get_delta_time(unsigned long long d);
 
-    void delay(unsigned long int ms);
+void delay(unsigned long int ms);
 
-    void add_callback(void (*cb)(void *), void *p);
-    void remove_callback(void (*cb)(void *));
+void add_callback(void (*cb)(void));
+void remove_callback(void (*cb)(void));
 
-    int add_timed_callback(void (*cb)(void *), unsigned int ms, void *p);
-    void remove_timed_callback(int handle);
-};
+void add_timed_callback(void (*cb)(void), unsigned int ms);
+}; // namespace Timer
 
 #endif

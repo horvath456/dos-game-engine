@@ -5,8 +5,17 @@
 #include <fstream.h>
 #include <string.h>
 
-#define TRUE 1
-#define FALSE 0
+namespace Speaker
+{
+
+void callback_handler();
+void play_music_end();
+
+unsigned char far *buffer;
+bool is_music_playing;
+unsigned int music_pos;
+unsigned long long game_time;
+unsigned long int buffer_length;
 
 void Speaker::play_music(const char *play_string)
 {
@@ -19,7 +28,7 @@ void Speaker::play_music(const char *play_string)
     while (size-- != 0)
         *buffer++ = *play_string++;
 
-    is_music_playing = TRUE;
+    is_music_playing = true;
     music_pos = 0;
     game_time = Timer::get_time();
     buffer_length = num_bytes;
@@ -27,7 +36,7 @@ void Speaker::play_music(const char *play_string)
     stop_music();
     stop();
 
-    Timer::add_callback(&callback_handler, (void *)0x0);
+    Timer::add_callback(&callback_handler);
 }
 
 void Speaker::stop_music()
@@ -42,12 +51,12 @@ void Speaker::play_music_end()
 {
     Timer::remove_callback(&callback_handler);
     stop();
-    is_music_playing = FALSE;
+    is_music_playing = false;
     delete[] buffer;
     buffer = NULL;
 }
 
-void Speaker::callback_handler(void *_)
+void Speaker::callback_handler()
 {
     if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
     {
@@ -82,9 +91,4 @@ void Speaker::stop()
     unsigned char tmp = inp(0x61) & 0xFC;
     outp(0x61, tmp);
 }
-
-unsigned char far *Speaker::buffer;
-int Speaker::is_music_playing;
-unsigned int Speaker::music_pos;
-unsigned long long Speaker::game_time;
-unsigned long int Speaker::buffer_length;
+} // namespace Speaker

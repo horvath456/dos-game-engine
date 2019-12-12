@@ -4,9 +4,6 @@
 #include <math.h>
 #include "vector2d.h"
 
-#define TRUE 1
-#define FALSE 0
-
 class AABB
 {
 public:
@@ -22,13 +19,13 @@ public:
         half_size = Vector2D();
     }
 
-    int overlaps(AABB &other)
+    bool overlaps(AABB &other)
     {
         if (fabs(center.x - other.center.x) > half_size.x + other.half_size.x)
-            return FALSE;
+            return false;
         if (fabs(center.y - other.center.y) > half_size.y + other.half_size.y)
-            return FALSE;
-        return TRUE;
+            return false;
+        return true;
     }
 
     Vector2D center;

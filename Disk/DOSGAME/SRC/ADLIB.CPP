@@ -13,7 +13,7 @@
 namespace Adlib
 {
 
-void callback_handler(void *_);
+void callback_handler();
 void play_music_end();
 void write_register(unsigned char num, unsigned char value);
 unsigned char read_status_register();
@@ -56,7 +56,7 @@ void play_music(const char *filename, int loop)
 
     play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
 
-    Timer::add_callback(&callback_handler, (void *)0x0);
+    Timer::add_callback(&callback_handler);
 }
 
 void stop_music()
@@ -76,7 +76,7 @@ void play_music_end()
     buffer = NULL;
 }
 
-void callback_handler(void *_)
+void callback_handler()
 {
     if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
     {

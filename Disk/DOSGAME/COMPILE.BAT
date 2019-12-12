@@ -5,18 +5,19 @@ SET WATCOM=C:\WATCOM
 SET EDPATH=C:\WATCOM\EDDAT
 SET WIPFC=C:\WATCOM\WIPFC
 rescan
+del main.exe
 mkdir build
 del build\*.*
 cd build
-wpp -ml ..\src\adlib.cpp 
-wpp -ml ..\src\animobj.cpp
-wpp -ml ..\src\drawobj.cpp
-wpp -ml ..\src\keyboard.cpp
-wpp -ml ..\src\main.cpp
-wpp -ml ..\src\palette.cpp
-wpp -ml ..\src\player.cpp
-wpp -ml ..\src\screen.cpp
-wpp -ml ..\src\timer.cpp
+wpp -ml -xs ..\src\adlib.cpp 
+wpp -ml -xs ..\src\animobj.cpp
+wpp -ml -xs ..\src\drawobj.cpp
+wpp -ml -xs ..\src\keyboard.cpp
+wpp -ml -xs ..\src\main.cpp
+wpp -ml -xs ..\src\palette.cpp
+wpp -ml -xs ..\src\player.cpp
+wpp -ml -xs ..\src\screen.cpp
+wpp -ml -xs ..\src\timer.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe
