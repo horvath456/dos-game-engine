@@ -5,18 +5,36 @@
 #include <conio.h>
 #include <string.h>
 
-void Timer::init_timer(unsigned int freq)
+#define TIMEINT 0x8
+
+namespace Timer
+{
+void far __interrupt new_handler();
+void set_timer(int frate);
+void reset_timer();
+
+void far __interrupt (*old_handler)();
+long int clock_ticks, counter;
+unsigned long long game_time;
+unsigned int frequency;
+void (*callbacks[10])(void *);
+void *callback_p_arguments[10];
+void (*delay_callbacks[10])(void *);
+unsigned long long delay_callback_times[10];
+void *delay_callback_p_arguments[10];
+
+void init_timer(unsigned int freq)
 {
     frequency = freq;
-    Timer::set_timer(freq);
+    set_timer(freq);
 }
 
-void Timer::deinit_timer()
+void deinit_timer()
 {
     reset_timer();
 }
 
-void far __interrupt Timer::new_handler()
+void far __interrupt new_handler()
 {
     game_time++;
     clock_ticks += counter;
@@ -48,7 +66,7 @@ void far __interrupt Timer::new_handler()
     };
 }
 
-void Timer::set_timer(int frate)
+void set_timer(int frate)
 {
     clock_ticks = 0;
     counter = 0x1234DD / frate;
@@ -59,7 +77,7 @@ void Timer::set_timer(int frate)
     outp(0x40, counter / 256);
 }
 
-void Timer::reset_timer()
+void reset_timer()
 {
     outp(0x43, 0x34);
     outp(0x40, 0);
@@ -67,17 +85,17 @@ void Timer::reset_timer()
     _dos_setvect(TIMEINT, old_handler);
 }
 
-unsigned long long Timer::get_time()
+unsigned long long get_time()
 {
     return game_time;
 }
 
-double Timer::get_delta_time(unsigned long long t)
+double get_delta_time(unsigned long long t)
 {
     return (double)((double)(game_time - t) / (double)frequency);
 }
 
-void Timer::delay(unsigned long int ms)
+void delay(unsigned long int ms)
 {
     unsigned long long start_timer = game_time;
     while ((double)((double)(game_time - start_timer) / (double)frequency) < ((double)(ms) / 1000.0))
@@ -85,7 +103,7 @@ void Timer::delay(unsigned long int ms)
     }
 }
 
-void Timer::add_callback(void (*cb)(void *), void *p)
+void add_callback(void (*cb)(void *), void *p)
 
 {
     for (int i = 0; i < 10; i++)
@@ -99,7 +117,7 @@ void Timer::add_callback(void (*cb)(void *), void *p)
     }
 }
 
-void Timer::remove_callback(void (*cb)(void *))
+void remove_callback(void (*cb)(void *))
 {
     for (int i = 0; i < 10; i++)
     {
@@ -112,7 +130,7 @@ void Timer::remove_callback(void (*cb)(void *))
     }
 }
 
-int Timer::add_timed_callback(void (*cb)(void *), unsigned int ms, void *p)
+int add_timed_callback(void (*cb)(void *), unsigned int ms, void *p)
 {
     for (int i = 0; i < 10; i++)
     {
@@ -127,19 +145,10 @@ int Timer::add_timed_callback(void (*cb)(void *), unsigned int ms, void *p)
     return -1;
 }
 
-void Timer::remove_timed_callback(int handle)
+void remove_timed_callback(int handle)
 {
     delay_callbacks[handle] = 0x0;
     delay_callback_times[handle] = 0x0;
     delay_callback_p_arguments[handle] = 0x0;
 }
-
-void far __interrupt (*Timer::old_handler)();
-long int Timer::clock_ticks, Timer::counter;
-unsigned long long Timer::game_time;
-unsigned int Timer::frequency;
-void (*Timer::callbacks[10])(void *);
-void *Timer::callback_p_arguments[10];
-void (*Timer::delay_callbacks[10])(void *);
-unsigned long long Timer::delay_callback_times[10];
-void *Timer::delay_callback_p_arguments[10];
+} // namespace Timer

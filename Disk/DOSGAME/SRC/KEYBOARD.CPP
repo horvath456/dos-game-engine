@@ -5,7 +5,18 @@
 #include <conio.h>
 #include <string.h>
 
-void Keyboard::init_keyboard()
+#define KEYBOARD_PORT 0x60
+#define KEYBOARD_INT 0x9
+
+namespace Keyboard
+{
+void far __interrupt new_handler();
+
+void far __interrupt (*old_handler)();
+unsigned char *pressed_mask;
+unsigned char last_action = 0x0;
+
+void init_keyboard()
 {
     _asm {
         mov ax, 0x0304
@@ -18,7 +29,7 @@ void Keyboard::init_keyboard()
     memset(pressed_mask, 256, 0);
 }
 
-void Keyboard::deinit_keyboard()
+void deinit_keyboard()
 {
     _dos_setvect(KEYBOARD_INT, old_handler);
     _asm {
@@ -27,22 +38,22 @@ void Keyboard::deinit_keyboard()
     }
 }
 
-int Keyboard::check_if_pressed(unsigned char scancode)
+int check_if_pressed(unsigned char scancode)
 {
     return pressed_mask[scancode & 0x1F];
 }
 
-unsigned char Keyboard::get_last_action()
+unsigned char get_last_action()
 {
     return last_action;
 }
 
-void Keyboard::clear_last_action()
+void clear_last_action()
 {
     last_action = 0;
 }
 
-int Keyboard::get_key_down(unsigned char scancode)
+int get_key_down(unsigned char scancode)
 {
     if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 0))
     {
@@ -53,7 +64,7 @@ int Keyboard::get_key_down(unsigned char scancode)
         return 0;
 }
 
-int Keyboard::get_key_up(unsigned char scancode)
+int get_key_up(unsigned char scancode)
 {
     if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 1))
     {
@@ -64,7 +75,7 @@ int Keyboard::get_key_up(unsigned char scancode)
         return 0;
 }
 
-void far __interrupt Keyboard::new_handler()
+void far __interrupt new_handler()
 {
     unsigned char byte = inp(KEYBOARD_PORT);
     if ((byte & 0x80))
@@ -80,7 +91,4 @@ void far __interrupt Keyboard::new_handler()
     }
     outp(0x20, 0x20);
 }
-
-void far __interrupt (*Keyboard::old_handler)();
-unsigned char *Keyboard::pressed_mask;
-unsigned char Keyboard::last_action = 0x0;
+} // namespace Keyboard

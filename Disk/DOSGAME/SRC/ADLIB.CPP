@@ -7,11 +7,30 @@
 #include <stdlib>
 #include "timer.h"
 
-using namespace std;
+#define ADDRESS_STATUS_PORT 0x388
+#define DATA_PORT 0x389
 
-void Adlib::play_music(const char *filename, int loop)
+namespace Adlib
 {
-    fstream infile = fstream(filename, ios::in | ios::binary);
+
+void callback_handler(void *_);
+void play_music_end();
+void write_register(unsigned char num, unsigned char value);
+unsigned char read_status_register();
+void delay_using_read(unsigned int iterations);
+unsigned char calc_register_offset(unsigned char channel);
+
+unsigned char far *buffer;
+bool is_music_playing;
+unsigned int music_pos;
+unsigned long long game_time;
+unsigned long int buffer_length;
+bool music_looping = false;
+int is_present = -1;
+
+void play_music(const char *filename, int loop)
+{
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
 
@@ -29,7 +48,7 @@ void Adlib::play_music(const char *filename, int loop)
         buffer[i] = c;
     }
 
-    is_music_playing = TRUE;
+    is_music_playing = true;
     music_pos = 0;
     game_time = Timer::get_time();
     buffer_length = num_notes * 7;
@@ -40,7 +59,7 @@ void Adlib::play_music(const char *filename, int loop)
     Timer::add_callback(&callback_handler, (void *)0x0);
 }
 
-void Adlib::stop_music()
+void stop_music()
 {
     if (is_music_playing)
     {
@@ -48,16 +67,16 @@ void Adlib::stop_music()
     }
 }
 
-void Adlib::play_music_end()
+void play_music_end()
 {
     Timer::remove_callback(&callback_handler);
     stop(1);
-    is_music_playing = FALSE;
+    is_music_playing = false;
     delete[] buffer;
     buffer = NULL;
 }
 
-void Adlib::callback_handler(void *_)
+void callback_handler(void *_)
 {
     if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
     {
@@ -80,7 +99,7 @@ void Adlib::callback_handler(void *_)
     }
 }
 
-void Adlib::play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform)
+void play(unsigned char channel, unsigned int freq, unsigned char octave, unsigned char waveform)
 {
     unsigned char register_offset = calc_register_offset(channel);
     write_register(0x20 + register_offset, 0x01);
@@ -97,13 +116,13 @@ void Adlib::play(unsigned char channel, unsigned int freq, unsigned char octave,
     write_register(0xB0 + channel - 1, ((freq & 0x300) >> 8) | ((octave & 0x7) << 2) | 0x20);
 }
 
-void Adlib::stop(unsigned char channel)
+void stop(unsigned char channel)
 {
     delay_using_read(35);
     write_register(0xB0 + calc_register_offset(channel), 0x11);
 }
 
-unsigned char Adlib::calc_register_offset(unsigned char channel)
+unsigned char calc_register_offset(unsigned char channel)
 {
     if (channel <= 3)
         return channel - 1;
@@ -112,7 +131,7 @@ unsigned char Adlib::calc_register_offset(unsigned char channel)
     return channel + 9;
 }
 
-int Adlib::check_if_adlib_present()
+int check_if_adlib_present()
 {
     if (is_present == -1)
     {
@@ -134,7 +153,7 @@ int Adlib::check_if_adlib_present()
     }
 }
 
-void Adlib::init_adlib()
+void init_adlib()
 {
     reset_card();
     write_register(0x1, 32);
@@ -143,7 +162,7 @@ void Adlib::init_adlib()
     write_register(0x4, 0x80);
 }
 
-void Adlib::write_register(unsigned char num, unsigned char value)
+void write_register(unsigned char num, unsigned char value)
 {
     outp(ADDRESS_STATUS_PORT, num);
     delay_using_read(6);
@@ -151,12 +170,12 @@ void Adlib::write_register(unsigned char num, unsigned char value)
     delay_using_read(35);
 }
 
-unsigned char Adlib::read_status_register()
+unsigned char read_status_register()
 {
     return inp(ADDRESS_STATUS_PORT);
 }
 
-void Adlib::delay_using_read(unsigned int iterations)
+void delay_using_read(unsigned int iterations)
 {
     for (int i = 0; i < iterations; i++)
     {
@@ -164,7 +183,7 @@ void Adlib::delay_using_read(unsigned int iterations)
     }
 }
 
-void Adlib::reset_card()
+void reset_card()
 {
     for (unsigned char i = 0x01; i <= 0xF5; i++)
     {
@@ -182,10 +201,4 @@ void Adlib::reset_card()
     write_register(0xBD, 0x10);
 }
 
-unsigned char far*Adlib::buffer;
-int Adlib::is_music_playing;
-unsigned int Adlib::music_pos;
-unsigned long long Adlib::game_time;
-unsigned long int Adlib::buffer_length;
-int Adlib::music_looping = 0;
-int Adlib::is_present = -1;
+} // namespace Adlib
