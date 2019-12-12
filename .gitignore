@@ -1,5 +1,6 @@
 node_modules
 TURBOC3
+WATCOM
 *.OBJ
 *.EXE
 BUILD
