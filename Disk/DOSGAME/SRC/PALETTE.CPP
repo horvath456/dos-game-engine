@@ -74,7 +74,8 @@ void Palette::fade_in(unsigned int ms)
 {
     for (int i = 1; i <= 64; i++)
     {
-        Timer::delay(ms);
+        if (ms > 0)
+            Timer::delay(ms);
         while (!Screen::is_in_vertical_retrace())
             ;
         for (int j = 0; j < 256; j++)
@@ -96,7 +97,8 @@ void Palette::fade_out(unsigned int ms)
 {
     for (int i = 1; i <= 64; i++)
     {
-        Timer::delay(ms);
+        if (ms > 0)
+            Timer::delay(ms);
         while (!Screen::is_in_vertical_retrace())
             ;
         for (int j = 0; j < 256; j++)
