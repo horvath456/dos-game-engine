@@ -8,11 +8,13 @@
 class AnimationObject
 {
 public:
-    AnimationObject(unsigned int numframes, const char *filename);
+    AnimationObject(const char *filename);
     ~AnimationObject();
 
     // x >= 0 && y >= 0 && x+width<SCREEN_WIDTH && y+height<SCREEN_HEIGHT
     void draw(Screen &screen, int x, int y);
+
+    unsigned char far *get_buffer();
 
     unsigned int frame;
 

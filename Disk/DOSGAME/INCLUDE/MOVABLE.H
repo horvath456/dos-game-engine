@@ -7,9 +7,6 @@
 #include "aabb.h"
 #include <math.h>
 
-#define TRUE 1
-#define FALSE 0
-
 #define GRAVITY 2
 #define MAX_FALLING_SPEED 10
 #define JUMP_SPEED 10

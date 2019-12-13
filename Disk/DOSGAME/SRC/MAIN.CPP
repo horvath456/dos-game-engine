@@ -34,7 +34,7 @@ int main()
 	unsigned long long game_time = Timer::get_time();
 	double delta_time = 0;
 
-	while (1 == 1)
+	while (true)
 	{
 		while (!Screen::is_in_vertical_retrace())
 			;
@@ -53,7 +53,7 @@ int main()
 		if (Keyboard::get_key_down(57))
 			player.target_velocity.y = -1;
 
-		player.update_physics(delta_time);
+		player.update_physics(delta_time*15);
 
 		screen.draw_background(background.get_buffer());
 

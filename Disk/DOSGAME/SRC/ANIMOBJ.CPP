@@ -4,33 +4,28 @@
 #include "screen.h"
 #include "drawobj.h"
 
-using namespace std;
-
-AnimationObject::AnimationObject(unsigned int numframes, const char *filename)
+AnimationObject::AnimationObject(const char *filename)
 {
     frame = 0;
-    num_frames = numframes;
 
-    fstream infile = fstream(filename, ios::in | ios::binary);
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
-    unsigned char buf[4];
+    unsigned char buf[6];
 
     infile.get(buf[0]);
     infile.get(buf[1]);
     infile.get(buf[2]);
     infile.get(buf[3]);
+    infile.get(buf[4]);
+    infile.get(buf[5]);
 
-    width = (buf[0] << 8) + buf[1];
-    height = (buf[2] << 8) + buf[3];
-
-    if (height > 200)
-        height = 200;
-    if (width > 320)
-        width = 320;
+    num_frames = (buf[0] << 8) + buf[1];
+    width = (buf[2] << 8) + buf[3];
+    height = (buf[4] << 8) + buf[5];
 
     buffer = new unsigned char[(unsigned int)(num_frames * width * height)];
 
-    for (unsigned int i = 0; i < numframes * width * height; i++)
+    for (unsigned int i = 0; i < num_frames * width * height; i++)
     {
         unsigned char c;
         infile.get(c);
@@ -43,6 +38,11 @@ AnimationObject::~AnimationObject()
     delete[] buffer;
 }
 
+unsigned char far *AnimationObject::get_buffer()
+{
+    return buffer + (frame * (width * height));
+}
+
 void AnimationObject::draw(Screen &screen, int x, int y)
 {
     unsigned int fr = frame;
@@ -50,7 +50,7 @@ void AnimationObject::draw(Screen &screen, int x, int y)
     unsigned int w = width;
     unsigned int h = height;
     unsigned int add_w = SCREEN_WIDTH - width;
-    unsigned char far *buf = buf + ((w * h) * fr);
+    unsigned char far *buf = get_buffer();
     _asm {
         push dx 
         push si 
