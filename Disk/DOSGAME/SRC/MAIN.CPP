@@ -53,7 +53,7 @@ int main()
 		if (Keyboard::get_key_down(57))
 			player.target_velocity.y = -1;
 
-		player.update_physics(delta_time*15);
+		player.update_physics(delta_time * 15);
 
 		screen.draw_background(background.get_buffer());
 

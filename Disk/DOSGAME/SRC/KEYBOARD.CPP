@@ -4,6 +4,7 @@
 #include <stdio>
 #include <conio.h>
 #include <string.h>
+#include <iostream.h>
 
 #define KEYBOARD_PORT 0x60
 #define KEYBOARD_INT 0x9
@@ -18,29 +19,22 @@ unsigned char last_action = 0x0;
 
 void init_keyboard()
 {
-    _asm {
-        mov ax, 0x0304
-        int 0x16
-    }
     old_handler = _dos_getvect(KEYBOARD_INT);
     _dos_setvect(KEYBOARD_INT, new_handler);
 
     pressed_mask = new unsigned char[256];
-    memset(pressed_mask, 256, 0);
+    memset(pressed_mask, 256, 0x00);
 }
 
 void deinit_keyboard()
 {
     _dos_setvect(KEYBOARD_INT, old_handler);
-    _asm {
-        mov ax, 0x0300
-        int 0x16
-    }
 }
 
-int check_if_pressed(unsigned char scancode)
+bool check_if_pressed(unsigned char scancode)
 {
-    return pressed_mask[scancode & 0x1F];
+    std::cout << "CHECK " << (int)scancode << " is: " << (int)pressed_mask[scancode] << std::endl;
+    return pressed_mask[scancode] == 1;
 }
 
 unsigned char get_last_action()
@@ -53,41 +47,44 @@ void clear_last_action()
     last_action = 0;
 }
 
-int get_key_down(unsigned char scancode)
+bool get_key_down(unsigned char scancode)
 {
-    if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 0))
+    if ((last_action == scancode) && ((last_action & 0x80) == 0x0))
     {
         clear_last_action();
-        return 1;
+        return true;
     }
     else
-        return 0;
+        return false;
 }
 
-int get_key_up(unsigned char scancode)
+bool get_key_up(unsigned char scancode)
 {
-    if (((get_last_action() & 0x1F) == (scancode & 0x1F)) && ((get_last_action() & 0x80) == 1))
+    if ((last_action == scancode) && ((last_action & 0x80) == 0x80))
     {
         clear_last_action();
-        return 1;
+        return true;
     }
     else
-        return 0;
+        return false;
 }
 
 void far __interrupt new_handler()
 {
     unsigned char byte = inp(KEYBOARD_PORT);
-    if ((byte & 0x80))
+    if (byte != 0xE0)
     {
-        pressed_mask[byte & 0x3F] = 0;
-        last_action = (byte & 0x3F) | 0x80;
-    }
-    else
-    {
-        if (pressed_mask[byte & 0x3F] == 0)
-            last_action = (byte & 0x3F);
-        pressed_mask[byte & 0x3F] = 1;
+        if ((byte & 0x80))
+        {
+            pressed_mask[byte & 0x7F] = 0;
+            last_action = (byte & 0x7F) | 0x80;
+        }
+        else
+        {
+            if (pressed_mask[byte & 0x7F] == 0)
+                last_action = (byte & 0x7F);
+            pressed_mask[byte & 0x7F] = 1;
+        }
     }
     outp(0x20, 0x20);
 }
