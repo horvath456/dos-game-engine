@@ -8,3 +8,5 @@ file palette.obj
 file player.obj
 file screen.obj
 file timer.obj
+file text.obj
+file font.obj

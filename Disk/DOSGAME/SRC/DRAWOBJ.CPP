@@ -3,8 +3,6 @@
 #include <fstream>
 #include "screen.h"
 
-using namespace std;
-
 void DrawObject::draw(Screen &screen, int x, int y, int transparent)
 {
     unsigned char far *buf = buffer;
@@ -84,7 +82,7 @@ DrawObject::~DrawObject()
 
 DrawObject::DrawObject(const char *filename)
 {
-    fstream infile = fstream(filename, ios::in | ios::binary);
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
 

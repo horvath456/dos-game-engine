@@ -18,6 +18,8 @@ wpp -ml -xs ..\src\palette.cpp
 wpp -ml -xs ..\src\player.cpp
 wpp -ml -xs ..\src\screen.cpp
 wpp -ml -xs ..\src\timer.cpp
+wpp -ml -xs ..\src\font.cpp
+wpp -ml -xs ..\src\text.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe

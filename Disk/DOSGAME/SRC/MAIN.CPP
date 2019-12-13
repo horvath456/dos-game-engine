@@ -1,6 +1,7 @@
 #include <stdio>
 #include <conio.h>
 #include <dos.h>
+#include <string>
 
 #include "screen.h"
 #include "drawobj.h"
@@ -10,6 +11,8 @@
 #include "player.h"
 #include "keyboard.h"
 #include "speaker.h"
+#include "text.h"
+#include "font.h"
 
 int main()
 {
@@ -22,6 +25,8 @@ int main()
 
 	Palette palette = Palette();
 	palette.load_palette_file("DATA\\PALETTE.DAT");
+
+	Font font = Font("DATA\\FONT.PSF");
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
@@ -45,15 +50,19 @@ int main()
 		if (Keyboard::check_if_pressed(1))
 			break;
 
-		if (Keyboard::check_if_pressed(75))
+		if (Keyboard::check_if_pressed(75) && !Keyboard::check_if_pressed(77))
+		{
 			player.target_velocity.x = -1;
-		if (Keyboard::check_if_pressed(77))
+		}
+		else if (!Keyboard::check_if_pressed(75) && Keyboard::check_if_pressed(77))
+		{
 			player.target_velocity.x = 1;
+		}
 
 		if (Keyboard::get_key_down(57))
 			player.target_velocity.y = -1;
 
-		player.update_physics(delta_time * 15);
+		player.update_physics(0.5);
 
 		screen.draw_background(background.get_buffer());
 
@@ -62,6 +71,9 @@ int main()
 			grass.draw(screen, i * 16, 200 - 16);
 		}
 		player.draw(screen);
+
+		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
+		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
 
 		screen.draw_screen_buffer();
 	}
