@@ -15,6 +15,7 @@
 #include "text.h"
 #include "font.h"
 #include "mouse.h"
+#include "joystick.h"
 
 int main()
 {
@@ -22,7 +23,9 @@ int main()
 
 	Keyboard::init_keyboard();
 	Timer::init_timer(7000);
+
 	bool mouse_installed = Mouse::init_mouse();
+	bool joystick_installed = Joystick::check_if_joystick_is_installed();
 
 	if (Adlib::check_if_adlib_present())
 	{
@@ -86,7 +89,7 @@ int main()
 		if (mouse_installed)
 		{
 			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
-			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
+			//mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
 		}
 
 		screen.draw_screen_buffer();
