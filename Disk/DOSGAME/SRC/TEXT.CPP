@@ -19,13 +19,14 @@ void write_text(const char *str, Font &font, unsigned char color, Screen &screen
 void putchar(char c, Font &font, unsigned char color, Screen &screen, unsigned int x, unsigned int y)
 {
     unsigned char far *src = font.get_buffer(c);
-    int mask[8] = {128, 64, 32, 16, 8, 4, 2, 1};
+    unsigned char mask[8] = {128, 64, 32, 16, 8, 4, 2, 1};
 
     for (int cy = 0; cy < font.height; cy++)
     {
         for (int cx = 0; cx < font.width; cx++)
         {
-            if (src[cy] & mask[cx])
+            unsigned int idx = cy * ((font.width + 7) / 8) + (cx / 8);
+            if (src[idx] & mask[cx % 8])
                 screen.plot_pixel(x + cx, y + cy, color);
         }
     }

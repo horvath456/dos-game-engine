@@ -13,9 +13,6 @@
 
 Font::Font(const char *filename)
 {
-    width = 8;
-    height = 8;
-
     std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
@@ -25,14 +22,18 @@ Font::Font(const char *filename)
     infile.get(buf[2]);
     infile.get(buf[3]);
 
-    buffer = new unsigned char[(unsigned int)(height * 256)];
-
     if (buf[0] == PSF1_MAGIC0 && buf[1] == PSF1_MAGIC1)
     {
+        width = 8;
+        height = buf[3];
         infile.seekg(4);
     }
     else if (buf[0] == PSF2_MAGIC0 && buf[1] == PSF2_MAGIC1 && buf[2] == PSF2_MAGIC2 && buf[3] == PSF2_MAGIC3)
     {
+        infile.seekg(24);
+        infile.get(height);
+        infile.seekg(28);
+        infile.get(width);
         infile.seekg(32);
     }
     else
@@ -40,7 +41,11 @@ Font::Font(const char *filename)
         return;
     }
 
-    for (unsigned int i = 0; i < height * 256; i++)
+    unsigned int buffer_len = (((width + 7) / 8) * height) * 256;
+
+    buffer = new unsigned char[buffer_len];
+
+    for (unsigned int i = 0; i < buffer_len; i++)
     {
         unsigned char c;
         infile.get(c);
