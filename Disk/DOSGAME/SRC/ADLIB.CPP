@@ -25,7 +25,6 @@ unsigned char far *sfx_buffer = NULL;
 bool is_music_playing = false;
 bool is_sfx_playing = false;
 unsigned int music_pos = 0;
-unsigned int music_start_pos = 0;
 unsigned int sfx_pos = 0;
 unsigned int music_buffer_length = 0;
 unsigned int sfx_buffer_length = 0;
@@ -37,15 +36,32 @@ int adlib_is_present = -1;
 
 void play_music(const char *filename, unsigned int rate)
 {
+    if (is_music_playing)
+        return;
+
     std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     infile.seekg(0, std::ios::end);
     unsigned int size = infile.tellg();
     infile.seekg(0, std::ios::beg);
 
-    music_buffer = new unsigned char[size];
+    unsigned char buf[2];
+    infile.get(buf[0]);
+    infile.get(buf[1]);
+    unsigned int size_in_imf_file = buf[0] | (buf[1]) << 8;
 
-    for (unsigned int i = 0; i < size; i++)
+    if (size_in_imf_file > 0)
+    {
+        music_buffer_length = size_in_imf_file;
+    }
+    else
+    {
+        music_buffer_length = size - 2;
+    }
+
+    music_buffer = new unsigned char[music_buffer_length];
+
+    for (unsigned int i = 0; i < music_buffer_length; i++)
     {
         unsigned char c;
         infile.get(c);
@@ -54,30 +70,40 @@ void play_music(const char *filename, unsigned int rate)
 
     is_music_playing = true;
     music_rate = rate;
-    music_buffer_length = size;
+    music_pos = 0;
     music_game_time = Timer::get_time();
-
-    if (music_buffer[0] == 0x0 && music_buffer[1] == 0x0)
-        music_start_pos = 0;
-    else
-        music_start_pos = 2;
-
-    music_pos = music_start_pos;
 
     Timer::add_callback(&callback_handler);
 }
 
 void play_sfx(const char *filename, unsigned int rate)
 {
+    if (is_sfx_playing)
+        return;
+
     std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     infile.seekg(0, std::ios::end);
     unsigned int size = infile.tellg();
     infile.seekg(0, std::ios::beg);
 
-    sfx_buffer = new unsigned char[size];
+    unsigned char buf[2];
+    infile.get(buf[0]);
+    infile.get(buf[1]);
+    unsigned int size_in_imf_file = buf[0] | (buf[1]) << 8;
 
-    for (unsigned int i = 0; i < size; i++)
+    if (size_in_imf_file > 0)
+    {
+        sfx_buffer_length = size_in_imf_file;
+    }
+    else
+    {
+        sfx_buffer_length = size - 2;
+    }
+
+    sfx_buffer = new unsigned char[sfx_buffer_length];
+
+    for (unsigned int i = 0; i < sfx_buffer_length; i++)
     {
         unsigned char c;
         infile.get(c);
@@ -86,13 +112,8 @@ void play_sfx(const char *filename, unsigned int rate)
 
     is_sfx_playing = true;
     sfx_rate = rate;
-    sfx_buffer_length = (unsigned long int)size;
+    sfx_pos = 0;
     sfx_game_time = Timer::get_time();
-
-    if (sfx_buffer[0] == 0x0 && sfx_buffer[1] == 0x0)
-        sfx_pos = 0;
-    else
-        sfx_pos = 2;
 
     Timer::add_callback(&callback_handler);
 }
@@ -127,7 +148,7 @@ void callback_handler()
 
             music_pos += 4;
             if (music_pos >= music_buffer_length)
-                music_pos = music_start_pos;
+                music_pos = 0;
 
             music_game_time = Timer::get_time();
         }

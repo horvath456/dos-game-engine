@@ -20,12 +20,12 @@ int main()
 	Screen screen = Screen();
 
 	Keyboard::init_keyboard();
-	Timer::init_timer(800);
+	Timer::init_timer(700);
 
 	if (Adlib::check_if_adlib_present())
 	{
 		Adlib::init_adlib();
-		Adlib::play_music("DATA\\MUSIC.IMF", 80);
+		Adlib::play_music("DATA\\MUSIC.IMF", 700);
 	}
 
 	Palette palette = Palette();
