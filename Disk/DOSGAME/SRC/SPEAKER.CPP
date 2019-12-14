@@ -11,13 +11,14 @@ namespace Speaker
 void callback_handler();
 void play_music_end();
 
-unsigned char far *buffer;
-bool is_music_playing;
-unsigned int music_pos;
-unsigned long long game_time;
-unsigned long int buffer_length;
+unsigned char far *buffer = NULL;
+bool is_music_playing = false;
+bool loop = false;
+unsigned int music_pos = 0;
+unsigned long long game_time = 0;
+unsigned long int buffer_length = 0;
 
-void Speaker::play_music(const char *play_string)
+void Speaker::play_music(const char *play_string, bool loop_music)
 {
     unsigned int num_bytes = strlen(play_string);
 
@@ -32,6 +33,7 @@ void Speaker::play_music(const char *play_string)
     music_pos = 0;
     game_time = Timer::get_time();
     buffer_length = num_bytes;
+    loop = loop_music;
 
     stop_music();
     stop();
@@ -64,8 +66,10 @@ void Speaker::callback_handler()
         play((buffer[music_pos] << 8) + buffer[music_pos + 1]);
         music_pos += 4;
     }
-    if (music_pos >= buffer_length)
+    if (music_pos >= buffer_length && !loop)
         play_music_end();
+    if (music_pos >= buffer_length && loop)
+        music_pos = 0;
 }
 
 //Play sound using built in speaker
