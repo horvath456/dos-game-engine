@@ -1,5 +1,7 @@
 #include "mouse.h"
 
+#include "screen.h"
+
 namespace Mouse
 {
 bool init_mouse()
@@ -69,8 +71,8 @@ struct MouseStatus get_position_and_button_status()
 
     status.left_button = buttons_status & 0x1;
     status.right_button = buttons_status & 0x2;
-    status.coors.x = x;
-    status.coors.y = y;
+    status.coors.x = x > SCREEN_WIDTH ? SCREEN_WIDTH : x;
+    status.coors.y = y > SCREEN_HEIGHT ? SCREEN_HEIGHT : y;
 
     return status;
 }

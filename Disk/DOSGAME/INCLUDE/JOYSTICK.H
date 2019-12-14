@@ -21,8 +21,8 @@ bool check_if_joystick_is_installed();
 void start_joystick_reading();
 void stop_joystick_reading();
 
-struct JoystickCoordinates coordinates = {0, 0};
-struct JoystickButtons buttons = {false,false};
+extern struct JoystickCoordinates coordinates;
+extern struct JoystickButtons buttons;
 } // namespace Joystick
 
 #endif

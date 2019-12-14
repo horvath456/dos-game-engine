@@ -8,6 +8,9 @@
 
 namespace Joystick
 {
+struct JoystickCoordinates coordinates = {0, 0};
+struct JoystickButtons buttons = {false, false};
+
 unsigned long long game_time = 0;
 unsigned long long game_time_bit0 = 0;
 unsigned long long game_time_bit1 = 0;

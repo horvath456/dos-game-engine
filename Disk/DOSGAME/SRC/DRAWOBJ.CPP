@@ -1,14 +1,47 @@
 #include "drawobj.h"
 
 #include <fstream>
+#include <iostream.h>
 #include "screen.h"
 
 void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
 {
+    if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
+        return;
+    if (x <= ((int)width * (-1)) || y <= ((int)height * (-1)))
+        return;
+
     unsigned char far *buf = buffer;
+
     unsigned int w = width;
     unsigned int h = height;
-    unsigned int add_w = SCREEN_WIDTH - width;
+
+    unsigned int si_add_after = 0;
+    unsigned int si_add_before = 0;
+
+    if (x + (int)width > SCREEN_WIDTH)
+    {
+        w += (SCREEN_WIDTH - x - (int)width);
+        si_add_after = width - w;
+    }
+    if (y + (int)height > SCREEN_HEIGHT)
+    {
+        h += (SCREEN_HEIGHT - y - (int)height);
+    }
+    if (x < 0)
+    {
+        w += x;
+        x = 0;
+        si_add_before = width - w;
+    }
+    if (y < 0)
+    {
+        h += y;
+        y = 0;
+        buf += width * (height - h);
+    }
+
+    unsigned int add_w = SCREEN_WIDTH - w;
     unsigned char far *screenbuf = screen.get_buffer(x, y);
 
     _asm {
@@ -28,6 +61,7 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
             lds si, [buf]
             les di, [screenbuf]
         height_loop_1:
+            add si, si_add_before
             mov cx, w
         width_loop_1:
             lodsb
@@ -39,6 +73,7 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
             inc di
             dec cx
             jnz width_loop_1
+            add si, si_add_after
             add di, add_w
             dec dx
             jnz height_loop_1
@@ -51,8 +86,10 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
             lds si, [buf]
             les di, [screenbuf]
         height_loop_2:
+            add si, si_add_before
             mov cx, w
             rep movsb
+            add si, si_add_after
             add di, add_w
             dec dx
             jnz height_loop_2

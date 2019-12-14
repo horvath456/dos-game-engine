@@ -86,10 +86,15 @@ int main()
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
 
+		char str[16];
+		sprintf(str, "C: %d\0", player.get_pos_x());
+
+		Text::write_text(str, font, 20, screen, 10, 110);
+
 		if (mouse_installed)
 		{
 			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
-			//mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
+			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
 		}
 
 		screen.draw_screen_buffer();

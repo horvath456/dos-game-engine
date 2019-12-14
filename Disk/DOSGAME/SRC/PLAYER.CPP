@@ -10,5 +10,5 @@ Player::Player(const char *filename)
 
 void Player::draw(Screen &screen)
 {
-    drawobj->draw(screen, get_pos_x(), get_pos_y(), 1);
+    drawobj->draw(screen, get_pos_x(), get_pos_y(), true);
 }

@@ -45,25 +45,60 @@ unsigned char far *AnimationObject::get_buffer()
 
 void AnimationObject::draw(Screen &screen, int x, int y)
 {
-    unsigned int fr = frame;
-    unsigned char far *screenbuf = screen.get_buffer(x, y);
+    if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
+        return;
+    if (x <= ((int)width * (-1)) || y <= ((int)height * (-1)))
+        return;
+
+    unsigned char far *buf = buffer;
+
     unsigned int w = width;
     unsigned int h = height;
-    unsigned int add_w = SCREEN_WIDTH - width;
-    unsigned char far *buf = get_buffer();
+
+    unsigned int si_add_after = 0;
+    unsigned int si_add_before = 0;
+
+    if (x + (int)width > SCREEN_WIDTH)
+    {
+        w += (SCREEN_WIDTH - x - (int)width);
+        si_add_after = width - w;
+    }
+
+    if (y + (int)height > SCREEN_HEIGHT)
+    {
+        h += (SCREEN_HEIGHT - y - (int)height);
+    }
+
+    if (x < 0)
+    {
+        w += x;
+        x = 0;
+        si_add_before = width - w;
+    }
+
+    if (y < 0)
+    {
+        h += y;
+        y = 0;
+        buf += width * (height - h);
+    }
+
+    unsigned int add_w = SCREEN_WIDTH - w;
+    unsigned char far *screenbuf = screen.get_buffer(x, y);
+
     _asm {
-        push dx 
         push si 
         push di 
         push es 
-        push ds 
+        push ds
         push cx 
+        push dx 
         push ax
-
         mov dx, h
         lds si, [buf]
         les di, [screenbuf]
     height_loop_1:
+        add si, si_add_before
         mov cx, w
     width_loop_1:
         lodsb
@@ -75,16 +110,16 @@ void AnimationObject::draw(Screen &screen, int x, int y)
         inc di
         dec cx
         jnz width_loop_1
+        add si, si_add_after
         add di, add_w
         dec dx
         jnz height_loop_1
-
         pop ax 
-        pop cx 
+        pop dx 
+        pop cx
         pop ds 
         pop es 
         pop di 
-        pop si 
-        pop dx
+        pop si
     }
 }
