@@ -20,7 +20,7 @@ int main()
 	Screen screen = Screen();
 
 	Keyboard::init_keyboard();
-	Timer::init_timer(700);
+	Timer::init_timer(7000);
 
 	if (Adlib::check_if_adlib_present())
 	{
