@@ -2,7 +2,7 @@
 
 #include "timer.h"
 #include <dos.h>
-#include <fstream.h>
+#include <fstream>
 #include <string.h>
 
 namespace Speaker
@@ -18,21 +18,47 @@ unsigned int music_pos = 0;
 unsigned long long game_time = 0;
 unsigned long int buffer_length = 0;
 
-void Speaker::play_music(const char *play_string, bool loop_music)
+void Speaker::play_music_string(const char *play_string, bool loop_music)
 {
-    unsigned int num_bytes = strlen(play_string);
+    buffer = new unsigned char[strlen(play_string)];
 
-    buffer = new far unsigned char[(unsigned int)(num_bytes)];
-
-    unsigned int size = num_bytes;
-
-    while (size-- != 0)
+    while (*play_string != 0)
         *buffer++ = *play_string++;
 
     is_music_playing = true;
     music_pos = 0;
     game_time = Timer::get_time();
-    buffer_length = num_bytes;
+    buffer_length = strlen(play_string);
+    loop = loop_music;
+
+    stop_music();
+    stop();
+
+    Timer::add_callback(&callback_handler);
+}
+
+void Speaker::play_music(const char *filename, bool loop_music)
+{
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+
+    unsigned char buf[2];
+    infile.get(buf[0]);
+    infile.get(buf[1]);
+    unsigned int size = buf[1] | (buf[0]) << 8;
+
+    buffer = new unsigned char[size];
+
+    for (unsigned int i = 0; i < size; i++)
+    {
+        unsigned char c;
+        infile.get(c);
+        buffer[i] = c;
+    }
+
+    is_music_playing = true;
+    music_pos = 0;
+    game_time = Timer::get_time();
+    buffer_length = size;
     loop = loop_music;
 
     stop_music();
