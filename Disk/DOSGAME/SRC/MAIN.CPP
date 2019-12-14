@@ -16,6 +16,7 @@
 #include "font.h"
 #include "mouse.h"
 #include "joystick.h"
+#include "level.h"
 
 int main()
 {
@@ -41,6 +42,9 @@ int main()
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
 	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
+
+	Level level = Level("DATA\\LEVEL.LVL");
+	level.add_tile(&grass);
 
 	Player player = Player("IMAGES\\PLAYER.SPR");
 
@@ -77,10 +81,8 @@ int main()
 
 		screen.draw_background(background.get_buffer());
 
-		for (int i = 0; i < 20; i++)
-		{
-			grass.draw(screen, i * 16, 200 - 16);
-		}
+		level.draw(screen);
+
 		player.draw(screen);
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);

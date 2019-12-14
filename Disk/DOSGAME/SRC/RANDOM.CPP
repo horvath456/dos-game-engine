@@ -8,8 +8,6 @@ namespace Random
 void init()
 {
     srand(time(NULL));
-    random_engine.seed(std::random_device()());
-    distribution
 }
 int integer_between(int min, int max)
 {

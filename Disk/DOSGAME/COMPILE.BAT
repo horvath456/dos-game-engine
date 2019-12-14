@@ -23,6 +23,7 @@ wpp -ml -xs ..\src\text.cpp
 wpp -ml -xs ..\src\mouse.cpp
 wpp -ml -xs ..\src\joystick.cpp
 wpp -ml -xs ..\src\random.cpp
+wpp -ml -xs ..\src\level.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe
