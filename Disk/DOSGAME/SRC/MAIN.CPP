@@ -77,10 +77,11 @@ int main()
 		if (Keyboard::get_key_down(57))
 			player.target_velocity.y = -1;
 
-		player.update_physics(0.5);
+		player.update_physics(delta_time * 15 < 1.5 ? delta_time * 15 : 1.5);
 
 		screen.draw_background(background.get_buffer());
 
+		level.x = player.get_pos_x() > 100 ? 100 - player.get_pos_x() : 0;
 		level.draw(screen);
 
 		player.draw(screen);

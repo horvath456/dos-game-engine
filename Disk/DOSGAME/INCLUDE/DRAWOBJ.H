@@ -15,11 +15,12 @@ public:
 
     unsigned char far *get_buffer();
 
+    unsigned int width;
+    unsigned int height;
+
 private:
     unsigned char pixel_at(unsigned int x, unsigned int y);
 
-    unsigned int width;
-    unsigned int height;
     unsigned char far *buffer;
 };
 

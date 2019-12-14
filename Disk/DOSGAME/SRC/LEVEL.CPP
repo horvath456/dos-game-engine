@@ -8,12 +8,9 @@
 #include "screen.h"
 #include "drawobj.h"
 
-#define TILE_WIDTH 16
-#define TILE_HEIGHT 16
-
 Level::Level(const char *filename)
 {
-    std::fstream infile = std::fstream(filename, std::ios::in);
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
 
@@ -34,9 +31,7 @@ Level::Level(const char *filename)
         buffer[i] = c;
     }
 
-    std::cout << "WIDTH: " << width << " H: " << height << std::endl;
-
-    x = -5;
+    x = 0;
     y = -8;
 }
 
@@ -62,7 +57,7 @@ void Level::draw(Screen &screen)
                 continue;
 
             DrawObject *d = (DrawObject *)tilemap[tile - 1];
-            d->draw(screen, x + j * TILE_WIDTH, y + i * TILE_HEIGHT);
+            d->draw(screen, x + j * d->width, y + i * d->height);
         }
     }
 }

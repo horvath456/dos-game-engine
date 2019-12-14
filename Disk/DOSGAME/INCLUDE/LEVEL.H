@@ -16,13 +16,13 @@ public:
     void add_tile(DrawObject *d);
 
     void draw(Screen &screen);
+    
+    int x;
+    int y;
 
 private:
     unsigned int width;
     unsigned int height;
-
-    int x;
-    int y;
 
     unsigned char far *buffer;
     std::vector<void *> tilemap;
