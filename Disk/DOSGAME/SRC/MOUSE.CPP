@@ -22,7 +22,27 @@ bool init_mouse()
         pop ax
     }
 
-    return status == 0xFFFF;
+    if (status == 0xFFFF)
+    {
+        _asm {
+            push ax 
+            push cx 
+            push dx
+            mov ax, 0x0007
+            xor cx, cx
+            mov dx, SCREEN_WIDTH-1
+            int 0x33
+            mov ax, 0x0008
+            xor cx, cx
+            mov dx, SCREEN_HEIGHT-1
+            int 0x33
+            pop dx 
+            pop cx 
+            pop ax
+        }
+        return true;
+    }
+    else return false;
 }
 
 void show_hardware_cursor()
@@ -71,8 +91,8 @@ struct MouseStatus get_position_and_button_status()
 
     status.left_button = buttons_status & 0x1;
     status.right_button = buttons_status & 0x2;
-    status.coors.x = x > SCREEN_WIDTH ? SCREEN_WIDTH : x;
-    status.coors.y = y > SCREEN_HEIGHT ? SCREEN_HEIGHT : y;
+    status.coors.x = x;
+    status.coors.y = y;
 
     return status;
 }

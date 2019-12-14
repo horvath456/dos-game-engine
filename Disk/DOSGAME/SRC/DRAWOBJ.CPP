@@ -19,12 +19,12 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
     unsigned int si_add_after = 0;
     unsigned int si_add_before = 0;
 
-    if (x + (int)width > SCREEN_WIDTH)
+    if (x + (int)width >= SCREEN_WIDTH)
     {
         w += (SCREEN_WIDTH - x - (int)width);
         si_add_after = width - w;
     }
-    if (y + (int)height > SCREEN_HEIGHT)
+    if (y + (int)height >= SCREEN_HEIGHT)
     {
         h += (SCREEN_HEIGHT - y - (int)height);
     }
