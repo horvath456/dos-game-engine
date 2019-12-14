@@ -7,6 +7,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdio>
+#include <iostream.h>
 
 #define TIMEINT 0x8
 
@@ -19,7 +20,7 @@ void reset_timer();
 void far __interrupt (*old_handler)();
 long int clock_ticks;
 long int counter;
-unsigned long long game_time;
+unsigned long long game_time = 0;
 unsigned int frequency;
 std::set<void (*)(void)> callbacks;
 std::vector<void (*)(void)> delay_callbacks;
@@ -58,8 +59,8 @@ void far __interrupt new_handler()
             if (delay_callback_times[i] <= game_time)
             {
                 ((void (*)(void))(delay_callbacks[i]))();
-                delay_callbacks.erase(delay_callbacks.begin()+i);
-                delay_callback_times.erase(delay_callback_times.begin()+i);
+                delay_callbacks.erase(delay_callbacks.begin() + i);
+                delay_callback_times.erase(delay_callback_times.begin() + i);
             }
         }
     }
@@ -95,12 +96,16 @@ double get_delta_time(unsigned long long t)
     return (double)((double)(game_time - t) / (double)frequency);
 }
 
+unsigned int get_frequency()
+{
+    return frequency;
+}
+
 void delay(unsigned long int ms)
 {
-    unsigned long long start_timer = game_time;
-    while ((double)((double)(game_time - start_timer) / (double)frequency) < ((double)(ms) / 1000.0))
-    {
-    }
+    unsigned long long start_time = game_time;
+    while (get_delta_time(start_time) < ((double)(ms) / 1000.0))
+        ;
 }
 
 void add_callback(void (*cb)(void))

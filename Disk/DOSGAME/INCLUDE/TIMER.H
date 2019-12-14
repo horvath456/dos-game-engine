@@ -10,6 +10,7 @@ void deinit_timer();
 
 unsigned long long get_time();
 double get_delta_time(unsigned long long d);
+unsigned int get_frequency();
 
 void delay(unsigned long int ms);
 

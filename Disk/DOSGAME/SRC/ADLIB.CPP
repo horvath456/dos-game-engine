@@ -2,6 +2,7 @@
 
 #include <dos.h>
 #include <conio.h>
+#include <iostream.h>
 #include <fstream>
 #include <stdio>
 #include <stdlib>
@@ -14,47 +15,84 @@ namespace Adlib
 {
 
 void callback_handler();
-void play_music_end();
 void write_register(unsigned char num, unsigned char value);
 unsigned char read_status_register();
 void delay_using_read(unsigned int iterations);
 unsigned char calc_register_offset(unsigned char channel);
 
-unsigned char far *buffer;
-bool is_music_playing;
-unsigned int music_pos;
-unsigned long long game_time;
-unsigned long int buffer_length;
-bool music_looping = false;
-int is_present = -1;
+unsigned char far *music_buffer = NULL;
+unsigned char far *sfx_buffer = NULL;
+bool is_music_playing = false;
+bool is_sfx_playing = false;
+unsigned int music_pos = 0;
+unsigned int music_start_pos = 0;
+unsigned int sfx_pos = 0;
+unsigned int music_buffer_length = 0;
+unsigned int sfx_buffer_length = 0;
+unsigned long long music_game_time = 0;
+unsigned long long sfx_game_time = 0;
+unsigned int music_rate = 0;
+unsigned int sfx_rate = 0;
+int adlib_is_present = -1;
 
-void play_music(const char *filename, int loop)
+void play_music(const char *filename, unsigned int rate)
 {
     std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
 
-    unsigned char buf[4];
+    infile.seekg(0, std::ios::end);
+    unsigned int size = infile.tellg();
+    infile.seekg(0, std::ios::beg);
 
-    infile.get(buf[0]);
-    infile.get(buf[1]);
+    music_buffer = new unsigned char[size];
 
-    unsigned int num_notes = (buf[0] << 8) + buf[1];
-
-    buffer = new unsigned char[(unsigned int)(num_notes * 7)];
-
-    for (int i = 0; i < num_notes * 7; i++)
+    for (unsigned int i = 0; i < size; i++)
     {
         unsigned char c;
         infile.get(c);
-        buffer[i] = c;
+        music_buffer[i] = c;
     }
 
     is_music_playing = true;
-    music_pos = 0;
-    game_time = Timer::get_time();
-    buffer_length = num_notes * 7;
-    music_looping = loop;
+    music_rate = rate;
+    music_buffer_length = size;
+    music_game_time = Timer::get_time();
 
-    play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+    if (music_buffer[0] == 0x0 && music_buffer[1] == 0x0)
+        music_start_pos = 0;
+    else
+        music_start_pos = 2;
+
+    music_pos = music_start_pos;
+
+    Timer::add_callback(&callback_handler);
+}
+
+void play_sfx(const char *filename, unsigned int rate)
+{
+    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+
+    infile.seekg(0, std::ios::end);
+    unsigned int size = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+
+    sfx_buffer = new unsigned char[size];
+
+    for (unsigned int i = 0; i < size; i++)
+    {
+        unsigned char c;
+        infile.get(c);
+        sfx_buffer[i] = c;
+    }
+
+    is_sfx_playing = true;
+    sfx_rate = rate;
+    sfx_buffer_length = (unsigned long int)size;
+    sfx_game_time = Timer::get_time();
+
+    if (sfx_buffer[0] == 0x0 && sfx_buffer[1] == 0x0)
+        sfx_pos = 0;
+    else
+        sfx_pos = 2;
 
     Timer::add_callback(&callback_handler);
 }
@@ -63,39 +101,55 @@ void stop_music()
 {
     if (is_music_playing)
     {
-        play_music_end();
+        stop(2);
+        stop(3);
+        stop(4);
+        stop(5);
+        stop(6);
+        stop(7);
+        stop(8);
+        stop(9);
+        is_music_playing = false;
+        delete[] music_buffer;
+        music_buffer = NULL;
     }
-}
-
-void play_music_end()
-{
-    Timer::remove_callback(&callback_handler);
-    stop(1);
-    is_music_playing = false;
-    delete[] buffer;
-    buffer = NULL;
 }
 
 void callback_handler()
 {
-    if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 5] << 8) + buffer[music_pos + 6])
+    if (is_music_playing)
     {
-        music_pos += 7;
-
-        if (music_pos >= buffer_length)
+        unsigned int wait_ticks = music_buffer[music_pos + 2] | (music_buffer[music_pos + 3]) << 8;
+        unsigned int wait_time = wait_ticks * (Timer::get_frequency() / music_rate);
+        if (Timer::get_time() - music_game_time >= wait_time)
         {
-            if (music_looping)
-                music_pos = 0;
-            else
-            {
-                play_music_end();
-                return;
-            }
+            write_register(music_buffer[music_pos], music_buffer[music_pos + 1]);
+
+            music_pos += 4;
+            if (music_pos >= music_buffer_length)
+                music_pos = music_start_pos;
+
+            music_game_time = Timer::get_time();
         }
+    }
+    if (is_sfx_playing)
+    {
+        unsigned int wait_ticks = sfx_buffer[sfx_pos + 2] | (sfx_buffer[sfx_pos + 3]) << 8;
+        unsigned int wait_time = wait_ticks * (Timer::get_frequency() / sfx_rate);
+        if (Timer::get_time() - sfx_game_time >= wait_time)
+        {
+            write_register(sfx_buffer[sfx_pos], sfx_buffer[sfx_pos + 1]);
 
-        game_time = Timer::get_time();
+            sfx_pos += 4;
+            if (sfx_pos >= sfx_buffer_length)
+            {
+                is_sfx_playing = false;
+                delete[] sfx_buffer;
+                sfx_buffer = NULL;
+            }
 
-        play(1, (buffer[music_pos + 1] << 8) + buffer[music_pos + 2], buffer[music_pos + 3], buffer[music_pos + 4]);
+            sfx_game_time = Timer::get_time();
+        }
     }
 }
 
@@ -131,9 +185,9 @@ unsigned char calc_register_offset(unsigned char channel)
     return channel + 9;
 }
 
-int check_if_adlib_present()
+bool check_if_adlib_present()
 {
-    if (is_present == -1)
+    if (adlib_is_present == -1)
     {
         write_register(4, 0x60);
         write_register(4, 0x80);
@@ -144,13 +198,9 @@ int check_if_adlib_present()
         unsigned char status2 = read_status_register();
         write_register(4, 0x60);
         write_register(4, 0x80);
-        is_present = (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
-        return (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
+        adlib_is_present = (((status1 & 0xE0) == 0x0) && ((status2 & 0xE0) == 0x0C0));
     }
-    else
-    {
-        return is_present;
-    }
+    return adlib_is_present;
 }
 
 void init_adlib()

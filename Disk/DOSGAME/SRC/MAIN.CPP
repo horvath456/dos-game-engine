@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <dos.h>
 #include <string>
+#include <iostream>
 
 #include "screen.h"
 #include "drawobj.h"
@@ -18,10 +19,14 @@ int main()
 {
 	Screen screen = Screen();
 
-	if (Adlib::check_if_adlib_present())
-		Adlib::init_adlib();
 	Keyboard::init_keyboard();
-	Timer::init_timer(1000);
+	Timer::init_timer(800);
+
+	if (Adlib::check_if_adlib_present())
+	{
+		Adlib::init_adlib();
+		Adlib::play_music("DATA\\MUSIC.IMF", 80);
+	}
 
 	Palette palette = Palette();
 	palette.load_palette_file("DATA\\PALETTE.DAT");

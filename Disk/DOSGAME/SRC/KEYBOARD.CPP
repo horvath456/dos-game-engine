@@ -33,7 +33,6 @@ void deinit_keyboard()
 
 bool check_if_pressed(unsigned char scancode)
 {
-    std::cout << "CHECK " << (int)scancode << " is: " << (int)pressed_mask[scancode] << std::endl;
     return pressed_mask[scancode] == 1;
 }
 
@@ -49,7 +48,7 @@ void clear_last_action()
 
 bool get_key_down(unsigned char scancode)
 {
-    if ((last_action == scancode) && ((last_action & 0x80) == 0x0))
+    if (((last_action & 0x7F) == scancode) && ((last_action & 0x80) == 0x0))
     {
         clear_last_action();
         return true;
@@ -60,7 +59,7 @@ bool get_key_down(unsigned char scancode)
 
 bool get_key_up(unsigned char scancode)
 {
-    if ((last_action == scancode) && ((last_action & 0x80) == 0x80))
+    if (((last_action & 0x7F) == scancode) && ((last_action & 0x80) == 0x80))
     {
         clear_last_action();
         return true;
