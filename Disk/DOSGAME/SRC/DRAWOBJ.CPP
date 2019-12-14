@@ -3,7 +3,7 @@
 #include <fstream>
 #include "screen.h"
 
-void DrawObject::draw(Screen &screen, int x, int y, int transparent)
+void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
 {
     unsigned char far *buf = buffer;
     unsigned int w = width;

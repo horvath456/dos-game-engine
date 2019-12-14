@@ -14,6 +14,7 @@
 #include "speaker.h"
 #include "text.h"
 #include "font.h"
+#include "mouse.h"
 
 int main()
 {
@@ -21,6 +22,7 @@ int main()
 
 	Keyboard::init_keyboard();
 	Timer::init_timer(7000);
+	bool mouse_installed = Mouse::init_mouse();
 
 	if (Adlib::check_if_adlib_present())
 	{
@@ -35,6 +37,7 @@ int main()
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
+	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
 
 	Player player = Player("IMAGES\\PLAYER.SPR");
 
@@ -79,6 +82,12 @@ int main()
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
+
+		if (mouse_installed)
+		{
+			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
+			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
+		}
 
 		screen.draw_screen_buffer();
 	}

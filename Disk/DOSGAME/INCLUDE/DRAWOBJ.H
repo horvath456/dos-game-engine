@@ -12,7 +12,7 @@ public:
     ~DrawObject();
 
     // x >= 0 && y >= 0 && x+width<SCREEN_WIDTH && y+height<SCREEN_HEIGHT
-    void draw(Screen &screen, int x, int y, int transparent = 0);
+    void draw(Screen &screen, int x, int y, bool transparent = false);
 
     unsigned char far *get_buffer();
 

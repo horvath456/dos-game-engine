@@ -20,6 +20,7 @@ wpp -ml -xs ..\src\screen.cpp
 wpp -ml -xs ..\src\timer.cpp
 wpp -ml -xs ..\src\font.cpp
 wpp -ml -xs ..\src\text.cpp
+wpp -ml -xs ..\src\mouse.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe
