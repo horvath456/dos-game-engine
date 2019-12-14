@@ -2,6 +2,6 @@ node_modules
 TURBOC3
 WATCOM
 *.OBJ
-*.EXE
+MAIN.EXE
 BUILD
 .vscode
