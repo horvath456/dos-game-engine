@@ -63,19 +63,16 @@ void AnimationObject::draw(Screen &screen, int x, int y)
         w += (SCREEN_WIDTH - x - (int)width);
         si_add_after = width - w;
     }
-
     if (y + (int)height > SCREEN_HEIGHT)
     {
         h += (SCREEN_HEIGHT - y - (int)height);
     }
-
     if (x < 0)
     {
         w += x;
         x = 0;
         si_add_before = width - w;
     }
-
     if (y < 0)
     {
         h += y;
@@ -87,13 +84,8 @@ void AnimationObject::draw(Screen &screen, int x, int y)
     unsigned char far *screenbuf = screen.get_buffer(x, y);
 
     _asm {
-        push si 
-        push di 
         push es 
         push ds
-        push cx 
-        push dx 
-        push ax
         mov dx, h
         lds si, [buf]
         les di, [screenbuf]
@@ -114,12 +106,7 @@ void AnimationObject::draw(Screen &screen, int x, int y)
         add di, add_w
         dec dx
         jnz height_loop_1
-        pop ax 
-        pop dx 
-        pop cx
         pop ds 
         pop es 
-        pop di 
-        pop si
     }
 }

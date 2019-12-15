@@ -45,13 +45,8 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
     unsigned char far *screenbuf = screen.get_buffer(x, y);
 
     _asm {
-        push si 
-        push di 
         push es 
         push ds
-        push cx 
-        push dx 
-        push ax
     }
 
     if (transparent)
@@ -79,6 +74,24 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
             jnz height_loop_1
         }
     }
+    else if (w % 4 == 0)
+    {
+        w >>= 2;
+        _asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
+        height_loop_2:
+            add si, si_add_before
+            xor ecx, ecx
+            mov cx, w
+            rep movsd
+            add si, si_add_after
+            add di, add_w
+            dec dx
+            jnz height_loop_2
+        }
+    }
     else
     {
         _asm {
@@ -97,13 +110,8 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
     }
 
     _asm {
-        pop ax 
-        pop dx 
-        pop cx
         pop ds 
-        pop es 
-        pop di 
-        pop si
+        pop es
     }
 }
 

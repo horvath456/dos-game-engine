@@ -33,16 +33,10 @@ void Screen::draw_screen_buffer()
     _asm {
         push ds
         push es
-        push cx
-        push si 
-        push di
         lds si, [src]
         les di, [dst]
         mov ecx, 16000
         rep movsd
-        pop di
-        pop si
-        pop cx
         pop es
         pop ds
     }
@@ -54,16 +48,10 @@ void Screen::clear_screen_buffer()
     _asm {
         push ds
         push es
-        push cx
-        push si 
-        push di
         les di, [dst]
         mov ecx, 16000
         xor eax, eax
         rep stosd
-        pop di
-        pop si
-        pop cx
         pop es
         pop ds
     }
@@ -75,16 +63,10 @@ void Screen::draw_background(unsigned char far *buf)
     _asm {
         push ds
         push es
-        push cx
-        push si 
-        push di
         lds si, [buf]
         les di, [dst]
         mov ecx, 16000
         rep movsd
-        pop di
-        pop si
-        pop cx
         pop es
         pop ds
     }

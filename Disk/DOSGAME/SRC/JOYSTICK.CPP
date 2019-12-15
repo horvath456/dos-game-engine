@@ -50,10 +50,6 @@ bool check_if_joystick_is_installed()
         unsigned int axis3 = 0x0;
         unsigned int axis4 = 0x0;
         _asm {
-            push ax
-            push bx 
-            push cx 
-            push dx
             mov ah, 0x84
             xor dx, dx
             int 0x15
@@ -65,10 +61,6 @@ bool check_if_joystick_is_installed()
             mov [axis2], bx
             mov [axis3], cx
             mov [axis4], dx
-            pop dx 
-            pop cx 
-            pop bx
-            pop ax
         }
         is_joystick_installed = switch_states == 0x0 && axis1 == 0x0 && axis2 == 0x0 && axis3 == 0x0 && axis4 == 0x0;
     }

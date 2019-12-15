@@ -15,19 +15,14 @@ bool init_mouse()
     unsigned int status = 0x0000;
 
     _asm {
-        push ax 
         xor ax, ax
         int 0x33
         mov [status], ax
-        pop ax
     }
 
     if (status == 0xFFFF)
     {
         _asm {
-            push ax 
-            push cx 
-            push dx
             mov ax, 0x0007
             xor cx, cx
             mov dx, SCREEN_WIDTH-1
@@ -36,9 +31,6 @@ bool init_mouse()
             xor cx, cx
             mov dx, SCREEN_HEIGHT-1
             int 0x33
-            pop dx 
-            pop cx 
-            pop ax
         }
         return true;
     }
@@ -48,20 +40,16 @@ bool init_mouse()
 void show_hardware_cursor()
 {
     _asm {
-        push ax
         mov ax, 0x0001
         int 0x33
-        pop ax
     }
 }
 
 void hide_hardware_cursor()
 {
     _asm {
-        push ax
         mov ax, 0x0002
         int 0x33
-        pop ax
     }
 }
 
@@ -74,19 +62,11 @@ struct MouseStatus get_position_and_button_status()
     unsigned int y;
 
     _asm {
-        push ax 
-        push bx 
-        push cx 
-        push dx
         mov ax, 0x0003
         int 0x33
         mov [x], cx
         mov [y], dx
         mov [buttons_status], bx
-        pop dx 
-        pop cx 
-        pop bx 
-        pop ax
     }
 
     status.left_button = buttons_status & 0x1;
@@ -106,20 +86,12 @@ struct MouseLastButtonData get_last_left_button_down()
     unsigned int y;
 
     _asm {
-        push ax 
-        push bx 
-        push cx 
-        push dx
         mov ax, 0x0005
         mov bx, 0x0000
         int 0x33
         mov [x], cx
         mov [y], dx
         mov [last_press_cnt], bx
-        pop dx 
-        pop cx 
-        pop bx 
-        pop ax
     }
 
     status.pressed = last_press_cnt > 0;
@@ -138,20 +110,12 @@ struct MouseLastButtonData get_last_left_button_up()
     unsigned int y;
 
     _asm {
-        push ax 
-        push bx 
-        push cx 
-        push dx
         mov ax, 0x0006
         mov bx, 0x0000
         int 0x33
         mov [x], cx
         mov [y], dx
         mov [last_press_cnt], bx
-        pop dx 
-        pop cx 
-        pop bx 
-        pop ax
     }
 
     status.pressed = last_press_cnt > 0;
@@ -170,20 +134,12 @@ struct MouseLastButtonData get_last_right_button_down()
     unsigned int y;
 
     _asm {
-        push ax 
-        push bx 
-        push cx 
-        push dx
         mov ax, 0x0005
         mov bx, 0x0001
         int 0x33
         mov [x], cx
         mov [y], dx
         mov [last_press_cnt], bx
-        pop dx 
-        pop cx 
-        pop bx 
-        pop ax
     }
 
     status.pressed = last_press_cnt > 0;
@@ -202,20 +158,12 @@ struct MouseLastButtonData get_last_right_button_up()
     unsigned int y;
 
     _asm {
-        push ax 
-        push bx 
-        push cx 
-        push dx
         mov ax, 0x0006
         mov bx, 0x0001
         int 0x33
         mov [x], cx
         mov [y], dx
         mov [last_press_cnt], bx
-        pop dx 
-        pop cx 
-        pop bx 
-        pop ax
     }
 
     status.pressed = last_press_cnt > 0;
