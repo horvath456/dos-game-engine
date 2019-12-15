@@ -9,21 +9,21 @@ del main.exe
 mkdir build
 del build\*.*
 cd build
-wpp -ml -xs ..\src\adlib.cpp 
-wpp -ml -xs ..\src\animobj.cpp
-wpp -ml -xs ..\src\drawobj.cpp
-wpp -ml -xs ..\src\keyboard.cpp
-wpp -ml -xs ..\src\main.cpp
-wpp -ml -xs ..\src\palette.cpp
-wpp -ml -xs ..\src\player.cpp
-wpp -ml -xs ..\src\screen.cpp
-wpp -ml -xs ..\src\timer.cpp
-wpp -ml -xs ..\src\font.cpp
-wpp -ml -xs ..\src\text.cpp
-wpp -ml -xs ..\src\mouse.cpp
-wpp -ml -xs ..\src\joystick.cpp
-wpp -ml -xs ..\src\random.cpp
-wpp -ml -xs ..\src\level.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\adlib.cpp 
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\animobj.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\drawobj.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\keyboard.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\main.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\palette.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\player.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\screen.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\timer.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\font.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\text.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\mouse.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\joystick.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\random.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\level.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe

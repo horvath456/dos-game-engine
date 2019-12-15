@@ -38,8 +38,8 @@ void Screen::draw_screen_buffer()
         push di
         lds si, [src]
         les di, [dst]
-        mov cx, 32000
-        rep movsw
+        mov ecx, 16000
+        rep movsd
         pop di
         pop si
         pop cx
@@ -58,9 +58,9 @@ void Screen::clear_screen_buffer()
         push si 
         push di
         les di, [dst]
-        mov cx, 32000
-        xor ax, ax
-        rep stosw
+        mov ecx, 16000
+        xor eax, eax
+        rep stosd
         pop di
         pop si
         pop cx
@@ -80,8 +80,8 @@ void Screen::draw_background(unsigned char far *buf)
         push di
         lds si, [buf]
         les di, [dst]
-        mov cx, 32000
-        rep movsw
+        mov ecx, 16000
+        rep movsd
         pop di
         pop si
         pop cx
