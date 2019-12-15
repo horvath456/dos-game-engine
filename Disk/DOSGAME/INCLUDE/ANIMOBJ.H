@@ -17,12 +17,11 @@ public:
 
     unsigned int frame;
 
-private:
-    unsigned int num_frames;
-
-    unsigned int width;
+     unsigned int width;
     unsigned int height;
 
+private:
+    unsigned int num_frames;
     unsigned char far *buffer;
 };
 

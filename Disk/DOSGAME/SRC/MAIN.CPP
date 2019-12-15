@@ -31,7 +31,7 @@ int main()
 	if (Adlib::check_if_adlib_present())
 	{
 		Adlib::init_adlib();
-		Adlib::play_music("DATA\\MUSIC.IMF", 700);
+		//Adlib::play_music("DATA\\MUSIC.IMF", 700);
 	}
 
 	Palette palette = Palette();
@@ -47,7 +47,6 @@ int main()
 
 	Level level = Level("DATA\\LEVEL.LVL");
 	level.add_tile(&grass);
-	level.set_player(&player);
 
 	palette.blackout_palette();
 	palette.fade_in();
@@ -65,11 +64,10 @@ int main()
 		if (Keyboard::check_if_pressed(1))
 			break;
 
-		player.update(delta_time);
-
 		screen.draw_background(background.get_buffer());
-		
-		level.render(screen);
+
+		player.update(delta_time * 3, level);
+		level.render(screen, player);
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
@@ -78,8 +76,8 @@ int main()
 		{
 			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
 			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
-			char str[16];
-			sprintf(str, "C: %d\0", mouse_status.coors.x);
+			char str[25];
+			sprintf(str, "FPS: %f\0", 1 / delta_time);
 			Text::write_text(str, font, 20, screen, 10, 110);
 		}
 

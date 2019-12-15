@@ -5,18 +5,20 @@
 
 #include "animobj.h"
 
+class Level;
+
 class Player
 {
 public:
-    Player(const char* filename);
+    Player(const char *filename);
     ~Player();
 
-    void update(double delta_time);
+    void update(double delta_time, Level &level);
 
     double pos_x;
     double pos_y;
 
-    AnimationObject* anim_obj;
+    AnimationObject *anim_obj;
 
 private:
     double vel_x;

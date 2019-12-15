@@ -5,8 +5,9 @@
 
 #include "screen.h"
 #include "drawobj.h"
-#include "player.h"
 #include <vector>
+
+class Player;
 
 class Level
 {
@@ -16,9 +17,9 @@ public:
 
     void add_tile(DrawObject *d);
 
-    void set_player(Player* pl);
+    void render(Screen &screen, Player& player);
 
-    void render(Screen &screen);
+    unsigned char get_tile(double x, double y);
 
     int camera_x;
     int camera_y;
@@ -27,11 +28,8 @@ public:
     unsigned int level_height;
 
 private:
-    unsigned char get_tile(unsigned int x, unsigned int y);
-
     unsigned char far *buffer;
     std::vector<void *> tilemap;
-    Player* player;
 };
 
 #endif
