@@ -7,8 +7,8 @@ namespace Mouse
 bool init_mouse()
 {
     unsigned int *IVT = (unsigned int *)0x0;
-    unsigned int offset = IVT[0x33 * 2];
-    unsigned int segment = IVT[0x33 * 2 + 2];
+    unsigned int offset = IVT[0x66];
+    unsigned int segment = IVT[0x68];
     if (offset == 0x0 && segment == 0x0)
         return false;
 
