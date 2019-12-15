@@ -24,6 +24,7 @@ public:
     void plot_pixel(unsigned int x, unsigned int y, unsigned char color);  
 
     static int is_in_vertical_retrace();
+    static void wait_retrace();
 
 private:
     static void set_screen_mode(unsigned char mode);

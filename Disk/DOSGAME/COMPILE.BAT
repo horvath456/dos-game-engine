@@ -9,21 +9,21 @@ del main.exe
 mkdir build
 del build\*.*
 cd build
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\adlib.cpp 
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\animobj.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\drawobj.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\keyboard.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\main.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\palette.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\player.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\screen.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\timer.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\font.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\text.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\mouse.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\joystick.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\random.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mprt -zq ..\src\level.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\adlib.cpp 
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\animobj.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\drawobj.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\keyboard.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\main.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\palette.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\player.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\screen.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\timer.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\font.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\text.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\mouse.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\joystick.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\random.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\level.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe

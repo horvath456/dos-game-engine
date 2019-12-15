@@ -56,8 +56,7 @@ int main()
 
 	while (true)
 	{
-		while (!Screen::is_in_vertical_retrace())
-			;
+		Screen::wait_retrace();
 
 		delta_time = Timer::get_delta_time(game_time);
 		game_time = Timer::get_time();

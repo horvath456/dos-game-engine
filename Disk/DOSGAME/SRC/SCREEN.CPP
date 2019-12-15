@@ -90,3 +90,22 @@ int Screen::is_in_vertical_retrace()
 {
     return inp(0x3DA) & 0x8;
 }
+
+void Screen::wait_retrace() {
+    _asm {
+        push ax 
+        push dx
+        mov dx, 0x03DA
+        Lbl1:
+        in al, dx 
+        test al, 1000b
+        je Lbl1
+        Lbl2:
+        in al, dx 
+        test al, 1000b
+        je Lbl2
+        pop dx 
+        pop ax
+    }
+    return;
+}
