@@ -39,15 +39,18 @@ void write_text(const char *str, Font &font, unsigned char color, Screen &screen
 void putchar(char c, Font &font, unsigned char color, Screen &screen, unsigned int x, unsigned int y)
 {
     unsigned char far *src = font.get_buffer(c);
-    std::uint32_t fgcolor32 = (std::uint32_t)color | ((std::uint32_t)color << 8) | ((std::uint32_t)color << 16) | ((std::uint32_t)color << 24);
+    std::uint32_t fgcolor32 = color | ((std::uint32_t)color << 8) | ((std::uint32_t)color << 16) | ((std::uint32_t)color << 24);
 
-    for (unsigned int cy = 0; cy < font.height; cy++)
+    unsigned char max_cy = font.height;
+    unsigned char max_cx = (font.width + 7) >> 3;
+
+    for (unsigned char cy = 0; cy < max_cy; cy++)
     {
-        for (unsigned int cx = 0; cx < (font.width + 7) / 8; cx++)
+        for (unsigned char cx = 0; cx < max_cx; cx++)
         {
             std::uint32_t mask_low = mask[(*src) & 0x0F];
             std::uint32_t mask_high = mask[((*src++) & 0xF0) >> 4];
-            std::uint32_t far *screenbuf32 = (std::uint32_t far *)screen.get_buffer(x + cx * 8, y + cy);
+            std::uint32_t far *screenbuf32 = (std::uint32_t far *)screen.get_buffer(x + (cx << 3), y + cy);
             screenbuf32[0] = (screenbuf32[0] & ~mask_low) | (fgcolor32 & mask_low);
             screenbuf32[1] = (screenbuf32[1] & ~mask_high) | (fgcolor32 & mask_high);
         }

@@ -41,7 +41,7 @@ Font::Font(const char *filename)
         return;
     }
 
-    unsigned int buffer_len = (((width + 7) / 8) * height) * 256;
+    unsigned int buffer_len = (((width + 7) >> 3) * height) << 8;
 
     buffer = new unsigned char[buffer_len];
 
@@ -60,5 +60,5 @@ Font::~Font()
 
 unsigned char far *Font::get_buffer(char c)
 {
-    return buffer + (unsigned char)c * ((width + 7) / 8) * height;
+    return buffer + (unsigned char)c * ((width + 7) >> 3) * height;
 }
