@@ -1,14 +1,84 @@
 #include "player.h"
 
 #include "screen.h"
+#include "keyboard.h"
 #include "drawobj.h"
+#include <cmath>
 
 Player::Player(const char *filename)
 {
-    drawobj = new DrawObject(filename);
+    anim_obj = new AnimationObject(filename);
+    pos_x = 10;
+    pos_y = 10;
+    vel_x = 0;
+    vel_y = 0;
 }
 
-void Player::draw(Screen &screen)
+Player::~Player()
 {
-    drawobj->draw(screen, get_pos_x(), get_pos_y(), true);
+    delete anim_obj;
+}
+
+void Player::update(double delta_time)
+{
+    if (Keyboard::check_if_pressed(KEY_UP))
+    {
+        vel_y = -6.0;
+    }
+    if (Keyboard::check_if_pressed(KEY_DOWN))
+    {
+        vel_y = 6.0;
+    }
+    if (Keyboard::check_if_pressed(KEY_LEFT))
+    {
+        vel_x += (on_ground ? -25.0 : -15.0) * delta_time;
+        dir_mod_y = 1;
+    }
+    if (Keyboard::check_if_pressed(KEY_RIGHT))
+    {
+        vel_x += (on_ground ? 25.0 : 15.0) * delta_time;
+        dir_mod_y = 0;
+    }
+    if (Keyboard::get_key_down(KEY_SPACE))
+    {
+        if (vel_y == 0)
+        {
+            vel_y = -12.0;
+            dir_mod_x = 1;
+        }
+    }
+
+    // Gravity
+    vel_y += 20.0 * delta_time;
+
+    // Drag
+    if (on_ground)
+    {
+        vel_x += -3.0 * vel_x * delta_time;
+        if (std::fabs(vel_x) < 0.01)
+            vel_x = 0.0;
+    }
+
+    // Clamp velocities
+    if (vel_x > 10.0)
+        vel_x = 10.0;
+
+    if (vel_x < -10.0)
+        vel_x = -10.0;
+
+    if (vel_y > 100.0)
+        vel_y = 100.0;
+
+    if (vel_y < -100.0)
+        vel_y = -100.0;
+
+    // Calculate potential new position
+    double new_pos_x = pos_x + vel_x * delta_time;
+    double new_pos_y = pos_y + vel_y * delta_time;
+
+    /* TODO: COLLISION */
+
+    // Apply new position
+    pos_x = new_pos_x;
+    pos_y = new_pos_y;
 }

@@ -43,10 +43,11 @@ int main()
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
 	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
 
+	Player player = Player("IMAGES\\PLAYER.ANM");
+
 	Level level = Level("DATA\\LEVEL.LVL");
 	level.add_tile(&grass);
-
-	Player player = Player("IMAGES\\PLAYER.SPR");
+	level.set_player(&player);
 
 	palette.blackout_palette();
 	palette.fade_in();
@@ -64,26 +65,11 @@ int main()
 		if (Keyboard::check_if_pressed(1))
 			break;
 
-		if (Keyboard::check_if_pressed(75) && !Keyboard::check_if_pressed(77))
-		{
-			player.target_velocity.x = -1;
-		}
-		else if (!Keyboard::check_if_pressed(75) && Keyboard::check_if_pressed(77))
-		{
-			player.target_velocity.x = 1;
-		}
-
-		if (Keyboard::get_key_down(57))
-			player.target_velocity.y = -1;
-
-		player.update_physics(delta_time * 15 < 1.5 ? delta_time * 15 : 1.5);
+		player.update(delta_time);
 
 		screen.draw_background(background.get_buffer());
-
-		level.x = player.get_pos_x() > 100 ? 100 - player.get_pos_x() : 0;
-		level.draw(screen);
-
-		player.draw(screen);
+		
+		level.render(screen);
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
@@ -94,7 +80,6 @@ int main()
 			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
 			char str[16];
 			sprintf(str, "C: %d\0", mouse_status.coors.x);
-
 			Text::write_text(str, font, 20, screen, 10, 110);
 		}
 

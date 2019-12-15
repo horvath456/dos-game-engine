@@ -3,19 +3,26 @@
 
 #pragma once
 
-#include "screen.h"
-#include "drawobj.h"
-#include "movable.h"
+#include "animobj.h"
 
-class Player : public Movable
+class Player
 {
 public:
-    Player(const char *filename);
+    Player(const char* filename);
+    ~Player();
 
-    void draw(Screen &screen);
+    void update(double delta_time);
+
+    double pos_x;
+    double pos_y;
+
+    AnimationObject* anim_obj;
 
 private:
-    DrawObject* drawobj;
+    double vel_x;
+    double vel_y;
+    int dir_mod_x;
+    int dir_mod_y;
+    bool on_ground;
 };
-
 #endif
