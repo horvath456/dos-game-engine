@@ -41,6 +41,23 @@ void far __interrupt new_handler()
 {
     game_time++;
     clock_ticks += counter;
+
+    std::set<void (*)(void)>::iterator it = callbacks.begin();
+    while (it != callbacks.end())
+    {
+        ((void (*)(void))((*it)))();
+        it++;
+    }
+    for (int i = delay_callbacks.size() - 1; i >= 0; i--)
+    {
+        if (delay_callback_times[i] <= game_time)
+        {
+            ((void (*)(void))(delay_callbacks[i]))();
+            delay_callbacks.erase(delay_callbacks.begin() + i);
+            delay_callback_times.erase(delay_callback_times.begin() + i);
+        }
+    }
+
     if (clock_ticks >= 0x10000)
     {
         clock_ticks -= 0x10000;
@@ -48,23 +65,9 @@ void far __interrupt new_handler()
     }
     else
     {
-        std::set<void (*)(void)>::iterator it = callbacks.begin();
-        while (it != callbacks.end())
-        {
-            ((void (*)(void))((*it)))();
-            it++;
-        }
-        for (int i = delay_callbacks.size() - 1; i >= 0; i--)
-        {
-            if (delay_callback_times[i] <= game_time)
-            {
-                ((void (*)(void))(delay_callbacks[i]))();
-                delay_callbacks.erase(delay_callbacks.begin() + i);
-                delay_callback_times.erase(delay_callback_times.begin() + i);
-            }
-        }
+        outp(0x20, 0x20);
     }
-    outp(0x20, 0x20);
+
 }; // namespace Timer
 
 void set_timer(int frate)
