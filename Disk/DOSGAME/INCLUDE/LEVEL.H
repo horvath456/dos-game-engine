@@ -19,7 +19,7 @@ public:
 
     void render(Screen &screen, Player& player);
 
-    unsigned char get_tile(double x, double y);
+    unsigned char get_tile(unsigned int x, unsigned int y);
 
     int camera_x;
     int camera_y;

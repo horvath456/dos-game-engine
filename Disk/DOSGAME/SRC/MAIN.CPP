@@ -31,7 +31,7 @@ int main()
 	if (Adlib::check_if_adlib_present())
 	{
 		Adlib::init_adlib();
-		//Adlib::play_music("DATA\\MUSIC.IMF", 700);
+		Adlib::play_music("DATA\\MUSIC.IMF", 700);
 	}
 
 	Palette palette = Palette();

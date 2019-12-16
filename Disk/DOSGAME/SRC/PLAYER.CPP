@@ -7,6 +7,9 @@
 #include <iostream.h>
 #include <cmath>
 
+#define TILE_WIDTH 16.0
+#define TILE_HEIGHT 16.0
+
 Player::Player(const char *filename)
 {
     anim_obj = new AnimationObject(filename);
@@ -25,33 +28,28 @@ void Player::update(double delta_time, Level &level)
 {
     if (Keyboard::check_if_pressed(KEY_UP))
     {
-        vel_y = -6.0;
+        vel_y = -6.0 * delta_time;
     }
     if (Keyboard::check_if_pressed(KEY_DOWN))
     {
-        vel_y = 6.0;
+        vel_y = 6.0 * delta_time;
     }
     if (Keyboard::check_if_pressed(KEY_LEFT))
     {
         vel_x += (on_ground ? -25.0 : -15.0) * delta_time;
-        dir_mod_y = 1;
     }
     if (Keyboard::check_if_pressed(KEY_RIGHT))
     {
         vel_x += (on_ground ? 25.0 : 15.0) * delta_time;
-        dir_mod_y = 0;
     }
-    if (Keyboard::get_key_down(KEY_SPACE))
+    if (Keyboard::get_key_down(KEY_SPACE) && on_ground)
     {
-        if (vel_y == 0)
-        {
-            vel_y = -12.0;
-            dir_mod_x = 1;
-        }
+        vel_y = -12.0;
     }
 
     // Gravity
-    vel_y += 20.0 * delta_time;
+    if (!on_ground)
+        vel_y += 20.0 * delta_time;
 
     // Drag
     if (on_ground)
@@ -76,42 +74,34 @@ void Player::update(double delta_time, Level &level)
 
     // Calculate potential new position
     double new_pos_x = pos_x + vel_x * delta_time;
-    double new_pos_y = pos_y + vel_y * delta_time; /*
-
-    if (vel_x <= 0) // Moving Left
-    {
-        if (level.get_tile(new_pos_x + 0.0, pos_y + 0.0) != 0 || level.get_tile(new_pos_x + 0.0, pos_y + 0.99) != 0)
-        {
-            new_pos_x = (int)new_pos_x + 1;
-            vel_x = 0;
-        }
-    }
-    else // Moving Right
-    {
-        if (level.get_tile(new_pos_x + 1.0, pos_y + 0.0) != 0 || level.get_tile(new_pos_x + 1.0, pos_y + 0.99) != 0)
-        {
-            new_pos_x = (int)new_pos_x;
-            vel_x = 0;
-        }
-    }*/
+    double new_pos_y = pos_y + vel_y * delta_time;
 
     on_ground = false;
-    if (vel_y <= 0) // Moving Up
+
+    int left_tile = (int)((double)new_pos_x / (double)TILE_WIDTH);
+    int right_tile = (int)((double)(new_pos_x + anim_obj->width) / (double)TILE_WIDTH);
+    int top_tile = (int)((double)new_pos_y / (double)TILE_HEIGHT);
+    int bottom_tile = (int)((double)(new_pos_y + anim_obj->height) / (double)TILE_HEIGHT);
+
+    if (left_tile < 0)
+        left_tile = 0;
+    if (right_tile > level.level_width)
+        right_tile = level.level_width;
+    if (top_tile < 0)
+        top_tile = 0;
+    if (bottom_tile > level.level_height)
+        bottom_tile = level.level_height;
+
+    for (unsigned int i = left_tile; i <= right_tile; i++)
     {
-        if (level.get_tile(new_pos_x + 0.0, new_pos_y) != 0 || level.get_tile(new_pos_x + 0.99, new_pos_y) != 0)
+        for (unsigned int j = top_tile; j <= bottom_tile; j++)
         {
-            new_pos_y = (int)new_pos_y + 1;
-            vel_y = 0;
-        }
-    }
-    else // Moving Down
-    {
-        if (level.get_tile(new_pos_x, new_pos_y + anim_obj->height + 15.99) != 0 || level.get_tile(new_pos_x + anim_obj->width, new_pos_y + anim_obj->height + 15.99) != 0)
-        {
-            new_pos_y = (new_pos_y / 16) * 16 + -1;
-            vel_y = 0;
-            on_ground = true; // Player has a solid surface underfoot
-            dir_mod_x = 0;
+            unsigned char t = level.get_tile(i, j);
+            if (t != 0)
+            {
+                on_ground = true;
+                new_pos_y = pos_y;
+            }
         }
     }
 

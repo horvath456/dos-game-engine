@@ -9,10 +9,11 @@
 #include "drawobj.h"
 #include "player.h"
 
-unsigned char Level::get_tile(double x, double y)
+#define TILE_WIDTH 16.0
+#define TILE_HEIGHT 16.0
+
+unsigned char Level::get_tile(unsigned int x_tile, unsigned int y_tile)
 {
-    unsigned int x_tile = x / 16;
-    unsigned int y_tile = y / 16;
     return buffer[y_tile * level_width + x_tile];
 }
 
@@ -56,7 +57,12 @@ void Level::add_tile(DrawObject *d)
 void Level::render(Screen &screen, Player &player)
 {
     if (player.pos_x > 150)
-        camera_x = 150 - (player.pos_x);
+    {
+        if (player.pos_x < level_width * TILE_WIDTH - 150)
+            camera_x = 150 - (player.pos_x);
+        else
+            camera_x = level_width * TILE_WIDTH - 150;
+    }
     else
         camera_x = 0;
 
@@ -74,5 +80,5 @@ void Level::render(Screen &screen, Player &player)
         }
     }
 
-    player.anim_obj->draw(screen, player.pos_x > 150 ? 150 : player.pos_x - camera_x, player.pos_y - camera_y);
+    player.anim_obj->draw(screen, player.pos_x > 150 ? 150 : player.pos_x + camera_x, player.pos_y + camera_y);
 }
