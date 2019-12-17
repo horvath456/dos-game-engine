@@ -21,6 +21,9 @@ public:
     AnimationObject *anim_obj;
 
 private:
+    void handle_collision(unsigned int tile_x, unsigned int tile_y, bool handle_y);
+    double new_pos_x;
+    double new_pos_y;
     double vel_x;
     double vel_y;
     int dir_mod_x;

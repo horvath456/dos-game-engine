@@ -13,7 +13,7 @@
 
 Font::Font(const char *filename)
 {
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
 

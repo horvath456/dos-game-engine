@@ -39,7 +39,7 @@ void play_music(const char *filename, unsigned int rate)
     if (is_music_playing)
         return;
 
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     infile.seekg(0, std::ios::end);
     unsigned int size = infile.tellg();
@@ -81,7 +81,7 @@ void play_sfx(const char *filename, unsigned int rate)
     if (is_sfx_playing)
         return;
 
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     infile.seekg(0, std::ios::end);
     unsigned int size = infile.tellg();

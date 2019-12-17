@@ -39,7 +39,7 @@ void Speaker::play_music_string(const char *play_string, bool loop_music)
 
 void Speaker::play_music(const char *filename, bool loop_music)
 {
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[2];
     infile.get(buf[0]);

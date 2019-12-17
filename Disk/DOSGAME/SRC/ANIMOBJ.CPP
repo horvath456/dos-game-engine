@@ -8,7 +8,7 @@ AnimationObject::AnimationObject(const char *filename)
 {
     frame = 0;
 
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[6];
 

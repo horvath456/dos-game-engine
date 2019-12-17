@@ -19,7 +19,7 @@ unsigned char Level::get_tile(unsigned int x_tile, unsigned int y_tile)
 
 Level::Level(const char *filename)
 {
-    std::fstream infile = std::fstream(filename, std::ios::in | std::ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
 

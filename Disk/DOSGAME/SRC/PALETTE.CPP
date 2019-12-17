@@ -5,8 +5,6 @@
 #include "screen.h"
 #include "timer.h"
 
-using namespace std;
-
 Palette::Palette()
 {
     palette = new unsigned char[768];
@@ -19,7 +17,7 @@ Palette::~Palette()
 
 void Palette::load_palette_file(const char *filename)
 {
-    fstream infile = fstream(filename, ios::in | ios::binary);
+    std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     for (unsigned int i = 0; i < 256; i++)
     {

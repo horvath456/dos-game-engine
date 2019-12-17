@@ -24,16 +24,22 @@ Player::~Player()
     delete anim_obj;
 }
 
+void Player::handle_collision(unsigned int tile_x, unsigned int tile_y, bool handle_y)
+{
+    if (handle_y)
+    {
+        new_pos_y = pos_y;
+        //if (tile_y * TILE_HEIGHT >= pos_y + anim_obj->height)
+            on_ground = true;
+    }
+    else
+    {
+        new_pos_x = pos_x;
+    }
+}
+
 void Player::update(double delta_time, Level &level)
 {
-    if (Keyboard::check_if_pressed(KEY_UP))
-    {
-        vel_y = -6.0 * delta_time;
-    }
-    if (Keyboard::check_if_pressed(KEY_DOWN))
-    {
-        vel_y = 6.0 * delta_time;
-    }
     if (Keyboard::check_if_pressed(KEY_LEFT))
     {
         vel_x += (on_ground ? -25.0 : -15.0) * delta_time;
@@ -44,7 +50,7 @@ void Player::update(double delta_time, Level &level)
     }
     if (Keyboard::get_key_down(KEY_SPACE) && on_ground)
     {
-        vel_y = -12.0;
+        vel_y = -60.0 * delta_time;
     }
 
     // Gravity
@@ -73,15 +79,15 @@ void Player::update(double delta_time, Level &level)
         vel_y = -100.0;
 
     // Calculate potential new position
-    double new_pos_x = pos_x + vel_x * delta_time;
-    double new_pos_y = pos_y + vel_y * delta_time;
+    new_pos_x = pos_x + vel_x * delta_time;
+    new_pos_y = pos_y + vel_y * delta_time;
 
     on_ground = false;
 
-    int left_tile = (int)((double)new_pos_x / (double)TILE_WIDTH);
+    int left_tile = (int)(new_pos_x / (double)TILE_WIDTH);
     int right_tile = (int)((double)(new_pos_x + anim_obj->width) / (double)TILE_WIDTH);
-    int top_tile = (int)((double)new_pos_y / (double)TILE_HEIGHT);
-    int bottom_tile = (int)((double)(new_pos_y + anim_obj->height) / (double)TILE_HEIGHT);
+    int top_tile = (int)(pos_y / (double)TILE_HEIGHT);
+    int bottom_tile = (int)((double)(pos_y + anim_obj->height) / (double)TILE_HEIGHT);
 
     if (left_tile < 0)
         left_tile = 0;
@@ -93,17 +99,22 @@ void Player::update(double delta_time, Level &level)
         bottom_tile = level.level_height;
 
     for (unsigned int i = left_tile; i <= right_tile; i++)
-    {
         for (unsigned int j = top_tile; j <= bottom_tile; j++)
-        {
-            unsigned char t = level.get_tile(i, j);
-            if (t != 0)
-            {
-                on_ground = true;
-                new_pos_y = pos_y;
-            }
-        }
-    }
+            if (level.get_tile(i, j) != 0)
+                handle_collision(i, j, false);
+
+    top_tile = (int)((double)new_pos_y / (double)TILE_HEIGHT);
+    bottom_tile = (int)((double)(new_pos_y + anim_obj->height) / (double)TILE_HEIGHT);
+
+    if (top_tile < 0)
+        top_tile = 0;
+    if (bottom_tile > level.level_height)
+        bottom_tile = level.level_height;
+
+    for (unsigned int i = left_tile; i <= right_tile; i++)
+        for (unsigned int j = top_tile; j <= bottom_tile; j++)
+            if (level.get_tile(i, j) != 0)
+                handle_collision(i, j, true);
 
     // Apply new position
     pos_x = new_pos_x;
