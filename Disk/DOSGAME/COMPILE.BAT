@@ -15,15 +15,14 @@ wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\drawobj.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\keyboard.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\main.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\palette.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\player.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\screen.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\timer.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\font.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\text.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\mouse.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\joystick.cpp
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\speaker.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\random.cpp
-wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\level.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe

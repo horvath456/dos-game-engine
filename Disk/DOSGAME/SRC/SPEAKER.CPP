@@ -2,7 +2,12 @@
 
 #include "timer.h"
 #include <dos.h>
+#include <conio.h>
+#include <iostream.h>
 #include <fstream>
+#include <stdio>
+#include <stdlib>
+#include <dos.h>
 #include <string.h>
 
 namespace Speaker
@@ -14,12 +19,21 @@ void play_music_end();
 unsigned char far *buffer = NULL;
 bool is_music_playing = false;
 bool loop = false;
+
+bool play_string_music = false;
+unsigned int octave = 2;
+unsigned int duration = 4;
+unsigned int curr_wait = 0;
+unsigned int tempo = 120;
+
 unsigned int music_pos = 0;
 unsigned long long game_time = 0;
 unsigned long int buffer_length = 0;
 
 void Speaker::play_music_string(const char *play_string, bool loop_music)
 {
+    stop_music();
+
     buffer = new unsigned char[strlen(play_string)];
 
     while (*play_string != 0)
@@ -29,22 +43,22 @@ void Speaker::play_music_string(const char *play_string, bool loop_music)
     music_pos = 0;
     game_time = Timer::get_time();
     buffer_length = strlen(play_string);
+    play_string_music = true;
     loop = loop_music;
-
-    stop_music();
-    stop();
 
     Timer::add_callback(&callback_handler);
 }
 
 void Speaker::play_music(const char *filename, bool loop_music)
 {
+    stop_music();
+
     std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[2];
     infile.get(buf[0]);
     infile.get(buf[1]);
-    unsigned int size = buf[1] | (buf[0]) << 8;
+    unsigned int size = (buf[1] | (buf[0]) << 8) * 4;
 
     buffer = new unsigned char[size];
 
@@ -60,9 +74,7 @@ void Speaker::play_music(const char *filename, bool loop_music)
     game_time = Timer::get_time();
     buffer_length = size;
     loop = loop_music;
-
-    stop_music();
-    stop();
+    play_string_music = false;
 
     Timer::add_callback(&callback_handler);
 }
@@ -86,12 +98,18 @@ void Speaker::play_music_end()
 
 void Speaker::callback_handler()
 {
-    if (Timer::get_delta_time(game_time) * 1000 >= (buffer[music_pos + 2] << 8) + buffer[music_pos + 3])
+    unsigned int wait_time = (unsigned int)buffer[music_pos + 3] | (unsigned int)((unsigned int)buffer[music_pos + 2] << 8);
+    unsigned int note = (unsigned int)buffer[music_pos + 1] | (unsigned int)((unsigned int)buffer[music_pos] << 8);
+    if (Timer::get_delta_time(game_time) * 1000 >= wait_time)
     {
         game_time = Timer::get_time();
-        play((buffer[music_pos] << 8) + buffer[music_pos + 1]);
+        if (note > 0)
+            play(note);
+        else
+            stop();
         music_pos += 4;
     }
+
     if (music_pos >= buffer_length && !loop)
         play_music_end();
     if (music_pos >= buffer_length && loop)

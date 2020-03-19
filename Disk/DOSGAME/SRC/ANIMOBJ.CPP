@@ -43,6 +43,12 @@ unsigned char far *AnimationObject::get_buffer()
     return buffer + (frame * (width * height));
 }
 
+void AnimationObject::set_frame(unsigned int f)  {
+    if (f < num_frames) {
+        frame = f;
+    }
+}
+
 void AnimationObject::draw(Screen &screen, int x, int y)
 {
     if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
@@ -50,7 +56,7 @@ void AnimationObject::draw(Screen &screen, int x, int y)
     if (x <= ((int)width * (-1)) || y <= ((int)height * (-1)))
         return;
 
-    unsigned char far *buf = buffer;
+    unsigned char far *buf = buffer + (frame * (width * height));
 
     unsigned int w = width;
     unsigned int h = height;

@@ -15,9 +15,11 @@ public:
 
     unsigned char far *get_buffer();
 
+    void set_frame(unsigned int f);
+
     unsigned int frame;
 
-     unsigned int width;
+    unsigned int width;
     unsigned int height;
 
 private:

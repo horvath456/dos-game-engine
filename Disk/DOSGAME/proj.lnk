@@ -3,9 +3,7 @@ file adlib.obj
 file animobj.obj
 file drawobj.obj
 file keyboard.obj
-file main.obj
 file palette.obj
-file player.obj
 file screen.obj
 file timer.obj
 file text.obj
@@ -13,4 +11,5 @@ file font.obj
 file mouse.obj
 file joystick.obj
 file random.obj
-file level.obj
+file speaker.obj
+file main.obj

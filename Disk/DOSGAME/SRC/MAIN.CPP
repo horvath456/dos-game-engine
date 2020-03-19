@@ -9,14 +9,12 @@
 #include "palette.h"
 #include "timer.h"
 #include "adlib.h"
-#include "player.h"
 #include "keyboard.h"
 #include "speaker.h"
 #include "text.h"
 #include "font.h"
 #include "mouse.h"
 #include "joystick.h"
-#include "level.h"
 
 int main()
 {
@@ -43,16 +41,13 @@ int main()
 	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
 	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
 
-	Player player = Player("IMAGES\\PLAYER.ANM");
-
-	Level level = Level("DATA\\LEVEL.LVL");
-	level.add_tile(&grass);
-
 	palette.blackout_palette();
 	palette.fade_in();
 
 	unsigned long long game_time = Timer::get_time();
 	double delta_time = 0;
+
+	Speaker::play_music("DATA\\EFFECT.SFX");
 
 	while (true)
 	{
@@ -65,9 +60,6 @@ int main()
 			break;
 
 		screen.draw_background(background.get_buffer());
-
-		player.update(delta_time * 3, level);
-		level.render(screen, player);
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
