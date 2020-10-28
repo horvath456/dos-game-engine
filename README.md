@@ -1,4 +1,4 @@
-# Dos Game Engine (Codename Gaymansion)
+# Dos Game Engine
 
 
 ## Prerequisites to compile
