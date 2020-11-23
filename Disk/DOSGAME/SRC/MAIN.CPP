@@ -38,7 +38,10 @@ int main()
 	Font font = Font("DATA\\FONT.PSF");
 
 	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
-	DrawObject grass = DrawObject("IMAGES\\GRASS.SPR");
+	DrawObject EA = DrawObject("IMAGES\\EA.SPR");
+	DrawObject EB = DrawObject("IMAGES\\EB.SPR");
+	DrawObject HK = DrawObject("IMAGES\\HK.SPR");
+	DrawObject HZ = DrawObject("IMAGES\\HZ.SPR");
 	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
 
 	palette.blackout_palette();
@@ -63,6 +66,11 @@ int main()
 
 		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
+
+		EA.draw(screen, 10, 120, false);
+		EB.draw(screen, 60, 120, false);
+		HK.draw(screen, 110, 120, false);
+		HZ.draw(screen, 160, 120, false);
 
 		if (mouse_installed)
 		{

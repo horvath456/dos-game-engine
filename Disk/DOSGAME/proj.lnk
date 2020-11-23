@@ -1,15 +1,3 @@
 name main.exe 
-file adlib.obj
-file animobj.obj
-file drawobj.obj
-file keyboard.obj
-file palette.obj
-file screen.obj
-file timer.obj
-file text.obj
-file font.obj
-file mouse.obj
-file joystick.obj
-file random.obj
-file speaker.obj
+file engine.lib
 file main.obj
