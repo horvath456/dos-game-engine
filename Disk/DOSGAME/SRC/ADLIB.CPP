@@ -136,6 +136,16 @@ void stop_music()
     }
 }
 
+void stop_sfx()
+{
+    if (is_sfx_playing)
+    {
+        is_sfx_playing = false;
+        delete[] sfx_buffer;
+        sfx_buffer = NULL;
+    }
+}
+
 void callback_handler()
 {
     if (is_music_playing)
@@ -164,9 +174,7 @@ void callback_handler()
             sfx_pos += 4;
             if (sfx_pos >= sfx_buffer_length)
             {
-                is_sfx_playing = false;
-                delete[] sfx_buffer;
-                sfx_buffer = NULL;
+                stop_sfx();
             }
 
             sfx_game_time = Timer::get_time();
@@ -256,6 +264,11 @@ void delay_using_read(unsigned int iterations)
 
 void reset_card()
 {
+    if (is_music_playing)
+        stop_music();
+    if (is_sfx_playing)
+        stop_sfx();
+
     for (unsigned char i = 0x01; i <= 0xF5; i++)
     {
         write_register(i, 0x0);
