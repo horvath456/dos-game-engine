@@ -27,6 +27,13 @@ wlib engine +keyboard +palette +screen
 wlib engine +timer +font +text +mouse 
 wlib engine +joystick +speaker +random
 
+mkdir dist
+del dist\engine.lib
+copy engine.lib dist\engine.lib
+mkdir dist\include
+del dist\include\*.h
+copy ..\include\*.h dist\include
+
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\main.cpp
 wlink @..\proj.lnk
 cd ..
