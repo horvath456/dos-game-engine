@@ -79,6 +79,8 @@ int main()
 
 		Draw::rect(screen, 10, 100, 50, 20, 20);
 		Draw::fillrect(screen, 10, 130, 50, 20, 20);
+		Draw::rect_round(screen, 100, 100, 50, 20, 20);
+		Draw::fillrect_round(screen, 100, 130, 50, 20, 20, 0x3);
 
 		if (mouse_installed)
 		{

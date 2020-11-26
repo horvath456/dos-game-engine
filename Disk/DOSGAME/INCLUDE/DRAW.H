@@ -12,8 +12,8 @@ namespace Draw
     void vline(Screen &screen, unsigned int x, unsigned int y, unsigned int height, unsigned char color);
     void rect(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color);
     void fillrect(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color);
-    void rect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned int radius);
-    void fillrect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned int radius);
+    void rect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color);
+    void fillrect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned char outline_color);
 }; // namespace Draw
 
 #endif

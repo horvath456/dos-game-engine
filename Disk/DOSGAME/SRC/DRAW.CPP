@@ -5,7 +5,7 @@
 
 namespace Draw
 {
-    inline void putpixel(Screen &screen, unsigned int x, unsigned int y, unsigned char color)
+    void putpixel(Screen &screen, unsigned int x, unsigned int y, unsigned char color)
     {
         screen.plot_pixel(x, y, color);
     }
@@ -50,13 +50,31 @@ namespace Draw
         }
     }
 
-    void rect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned int radius)
+    void rect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color)
     {
-        std::uint8_t far *screenbuf = (std::uint8_t far *)screen.get_buffer(x, y);
+        Draw::hline(screen, x + 3, y, width - 5, color);
+        Draw::hline(screen, x + 3, y + height, width - 5, color);
+        Draw::vline(screen, x, y + 3, height - 5, color);
+        Draw::vline(screen, x + width, y + 3, height - 5, color);
+        Draw::putpixel(screen, x + 1, y + 2, color);
+        Draw::putpixel(screen, x + 2, y + 1, color);
+        Draw::putpixel(screen, x + width - 1, y + 2, color);
+        Draw::putpixel(screen, x + width - 2, y + 1, color);
+        Draw::putpixel(screen, x + 1, y + height - 2, color);
+        Draw::putpixel(screen, x + 2, y + height - 1, color);
+        Draw::putpixel(screen, x + width - 1, y + height - 2, color);
+        Draw::putpixel(screen, x + width - 2, y + height - 1, color);
     }
 
-    void fillrect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned int radius)
+    void fillrect_round(Screen &screen, unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char color, unsigned char outline_color)
     {
-        std::uint8_t far *screenbuf = (std::uint8_t far *)screen.get_buffer(x, y);
+        Draw::rect_round(screen, x, y, width, height, outline_color);
+        Draw::fillrect(screen, x + 3, y + 1, width - 5, height - 1, color);
+        Draw::fillrect(screen, x + 1, y + 3, 2, height - 5, color);
+        Draw::fillrect(screen, x + width - 2, y + 3, 2, height - 5, color);
+        Draw::putpixel(screen, x + 2, y + 2, color);
+        Draw::putpixel(screen, x + width - 2, y + 2, color);
+        Draw::putpixel(screen, x + 2, y + height - 2, color);
+        Draw::putpixel(screen, x + width - 2, y + height - 2, color);
     }
 } // namespace Draw
