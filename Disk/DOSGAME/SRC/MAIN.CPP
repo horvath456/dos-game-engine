@@ -15,6 +15,7 @@
 #include "font.h"
 #include "mouse.h"
 #include "joystick.h"
+#include "draw.h"
 
 int main()
 {
@@ -64,7 +65,7 @@ int main()
 
 		screen.draw_background(background.get_buffer());
 
-		Text::write_text((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 10, 50);
+		Text::write_text_center((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 50);
 		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
 
 		EA.draw(screen, 10, 120, false);
@@ -72,13 +73,17 @@ int main()
 		HK.draw(screen, 110, 120, false);
 		HZ.draw(screen, 160, 120, false);
 
+		char str[25];
+		sprintf(str, "FPS: %f\0", 1 / delta_time);
+		Text::write_text(str, font, 20, screen, 10, 110);
+
+		Draw::rect(screen, 10, 100, 50, 20, 20);
+		Draw::fillrect(screen, 10, 130, 50, 20, 20);
+
 		if (mouse_installed)
 		{
 			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
 			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
-			char str[25];
-			sprintf(str, "FPS: %f\0", 1 / delta_time);
-			Text::write_text(str, font, 20, screen, 10, 110);
 		}
 
 		screen.draw_screen_buffer();

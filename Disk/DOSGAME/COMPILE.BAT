@@ -22,10 +22,11 @@ wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\mouse.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\joystick.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\speaker.cpp
 wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\random.cpp
-wlib engine +adlib +animobj +drawobj 
+wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\draw.cpp
+wlib engine +adlib +animobj +drawobj
 wlib engine +keyboard +palette +screen 
 wlib engine +timer +font +text +mouse 
-wlib engine +joystick +speaker +random
+wlib engine +joystick +speaker +random +draw
 
 mkdir dist
 del dist\engine.lib

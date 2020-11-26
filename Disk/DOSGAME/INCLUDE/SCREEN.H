@@ -17,14 +17,17 @@ public:
     void clear_screen_buffer();
 
     // x >= 0 && y >= 0 && x < SCREEN_WIDTH && y < SCREEN_HEIGHT
-    unsigned char* get_buffer(unsigned int x, unsigned int y);
+    unsigned char *get_buffer(unsigned int x, unsigned int y);
 
     void draw_background(unsigned char *buf);
 
-    void plot_pixel(unsigned int x, unsigned int y, unsigned char color);  
+    void plot_pixel(unsigned int x, unsigned int y, unsigned char color);
 
     static int is_in_vertical_retrace();
     static void wait_retrace();
+
+    static const unsigned int HPIXELS = SCREEN_WIDTH;
+    static const unsigned int VPIXELS = SCREEN_HEIGHT;
 
 private:
     static void set_screen_mode(unsigned char mode);
