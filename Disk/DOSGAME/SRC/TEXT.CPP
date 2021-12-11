@@ -71,8 +71,15 @@ namespace Text
         {
             while (c != 0x0)
             {
+                if (x > SCREEN_WIDTH - 9)
+                {
+                    x = 0;
+                    y += font.height + 1;
+                }
+                if (y + font.height >= SCREEN_HEIGHT)
+                    break;
                 putchar_narrow(c, font, color, screen, x, y);
-                x += 8;
+                x += 9;
                 c = *str++;
             }
         }
@@ -80,8 +87,15 @@ namespace Text
         {
             while (c != 0x0)
             {
+                if (x >= SCREEN_WIDTH - (font.width + 1))
+                {
+                    x = 0;
+                    y += font.height + 1;
+                }
+                if (y + font.height >= SCREEN_HEIGHT)
+                    break;
                 putchar(c, font, color, screen, x, y);
-                x += font.width;
+                x += font.width + 1;
                 c = *str++;
             }
         }
@@ -89,7 +103,9 @@ namespace Text
 
     void write_text_center(const char *str, Font &font, unsigned char color, Screen &screen, unsigned int y, unsigned int center_x)
     {
-        unsigned int calc_x = 160 - (font.width * std::strlen(str)) / 2;
+        unsigned int calc_x = 160;
+        if (std::strlen(str) > 0)
+            calc_x = 160 - (font.width * std::strlen(str) + 1 * (std::strlen(str) - 1)) / 2;
         write_text(str, font, color, screen, calc_x, y);
     }
 } // namespace Text

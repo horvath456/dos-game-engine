@@ -20,6 +20,7 @@ public:
     unsigned char *get_buffer(unsigned int x, unsigned int y);
 
     void draw_background(unsigned char *buf);
+    void draw_background_color(unsigned char col);
 
     void plot_pixel(unsigned int x, unsigned int y, unsigned char color);
 

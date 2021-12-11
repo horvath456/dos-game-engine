@@ -12,16 +12,18 @@
 
 namespace Keyboard
 {
-void init_keyboard();
-void deinit_keyboard();
+    typedef struct
+    {
+        unsigned char key_code;
+        bool is_keydown;
+    } KeyEvent;
 
-bool check_if_pressed(unsigned char scancode);
+    void init_keyboard();
+    void deinit_keyboard();
 
-unsigned char get_last_action();
-void clear_last_action();
+    bool check_if_pressed(unsigned char scancode);
 
-bool get_key_up(unsigned char scancode);
-bool get_key_down(unsigned char scancode);
+    bool get_keyevent(KeyEvent *keyevent);
 } // namespace Keyboard
 
 #endif

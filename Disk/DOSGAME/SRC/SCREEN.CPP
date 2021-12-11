@@ -57,6 +57,23 @@ void Screen::clear_screen_buffer()
     }
 }
 
+void Screen::draw_background_color(unsigned char c8)
+{
+    unsigned char far *dst = screen_buffer;
+    unsigned long int color = ((c8 << 8 | c8) << 16) | (c8 << 8 | c8);
+    _asm
+    {
+        push ds
+        push es
+        mov eax, color
+        les di, [dst]
+        mov ecx, 16000
+        rep stosd
+        pop es
+        pop ds
+    }
+}
+
 void Screen::draw_background(unsigned char far *buf)
 {
     unsigned char far *dst = screen_buffer;
@@ -91,7 +108,8 @@ int Screen::is_in_vertical_retrace()
     return inp(0x3DA) & 0x8;
 }
 
-void Screen::wait_retrace() {
+void Screen::wait_retrace()
+{
     _asm {
         push ax 
         push dx
