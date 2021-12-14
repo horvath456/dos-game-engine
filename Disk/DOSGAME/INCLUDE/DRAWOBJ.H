@@ -18,6 +18,9 @@ public:
     unsigned int width;
     unsigned int height;
 
+    unsigned int x;
+    unsigned int y;
+
 private:
     unsigned char pixel_at(unsigned int x, unsigned int y);
 

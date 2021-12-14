@@ -66,6 +66,9 @@ namespace Text
 
     void write_text(const char *str, Font &font, unsigned char color, Screen &screen, unsigned int x, unsigned int y)
     {
+        if (*str == 0x0)
+            return;
+
         char c = *str++;
         if (font.width == 8)
         {
@@ -103,6 +106,9 @@ namespace Text
 
     void write_text_center(const char *str, Font &font, unsigned char color, Screen &screen, unsigned int y, unsigned int center_x)
     {
+        if (*str == 0x0)
+            return;
+
         unsigned int calc_x = 160;
         if (std::strlen(str) > 0)
             calc_x = 160 - (font.width * std::strlen(str) + 1 * (std::strlen(str) - 1)) / 2;

@@ -53,6 +53,15 @@ int main()
 
 	Speaker::play_music("DATA\\EFFECT.SFX");
 
+	bool click_event = false;
+
+	unsigned int lastmousedownx = 0;
+	unsigned int lastmousedowny = 0;
+	unsigned int lastmouseupx = 0;
+	unsigned int lastmouseupy = 0;
+
+	Mouse::MouseStatus mousestatus = Mouse::get_current_status();
+
 	while (true)
 	{
 		Screen::wait_retrace();
@@ -84,8 +93,32 @@ int main()
 
 		if (mouse_installed)
 		{
-			struct Mouse::MouseStatus mouse_status = Mouse::get_position_and_button_status();
-			mouse.draw(screen, mouse_status.coors.x, mouse_status.coors.y, true);
+			mousestatus = Mouse::get_current_status();
+			mouse.draw(screen, mousestatus.coors.x, mousestatus.coors.y, true);
+		}
+
+		Mouse::MouseEvent mouseevent;
+		if (Mouse::get_mouse_click_event(&mouseevent))
+		{
+			click_event = true;
+			if (mouseevent.type == Mouse::left_mouse_down)
+			{
+				lastmousedownx = mouseevent.coors.x;
+				lastmousedowny = mouseevent.coors.y;
+			}
+			else if (mouseevent.type == Mouse::left_mouse_up)
+			{
+				lastmouseupx = mouseevent.coors.x;
+				lastmouseupy = mouseevent.coors.y;
+			}
+		}
+
+		if (click_event)
+		{
+			Text::write_text("CLICK", font, 20, screen, 80, 180);
+			char debug[50] = {""};
+			sprintf(debug, "%d %d  %d %d  C: %d %d", lastmousedownx, lastmousedowny, lastmouseupx, lastmouseupy, mousestatus.coors.x, mousestatus.coors.y);
+			Text::write_text_center(debug, font, 20, screen, 20);
 		}
 
 		screen.draw_screen_buffer();
