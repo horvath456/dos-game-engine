@@ -5,3 +5,4 @@ WATCOM
 MAIN.EXE
 BUILD
 .vscode
+.DS_Store

@@ -16,6 +16,9 @@
 #include "mouse.h"
 #include "joystick.h"
 #include "draw.h"
+#include "sprite.h"
+#include "tween.h"
+#include "random.h"
 
 int main()
 {
@@ -30,7 +33,7 @@ int main()
 	if (Adlib::check_if_adlib_present())
 	{
 		Adlib::init_adlib();
-		//Adlib::play_music("DATA\\MUSIC.IMF", 700);
+		Adlib::play_music("DATA\\MUSIC.IMF", 700);
 	}
 
 	Palette palette = Palette();
@@ -38,12 +41,11 @@ int main()
 
 	Font font = Font("DATA\\FONT.PSF");
 
-	DrawObject background = DrawObject("IMAGES\\BACKGRND.SPR");
-	DrawObject EA = DrawObject("IMAGES\\EA.SPR");
-	DrawObject EB = DrawObject("IMAGES\\EB.SPR");
-	DrawObject HK = DrawObject("IMAGES\\HK.SPR");
-	DrawObject HZ = DrawObject("IMAGES\\HZ.SPR");
-	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR");
+	unsigned int soundeffect1[] = {2000, 50, 3000, 15, 1800, 25, 0, 0};
+
+	Sprite background = Sprite("IMAGES\\BACKGRND.SPR");
+	DrawObject EB = DrawObject("IMAGES\\EB.SPR", 60, 120);
+	DrawObject mouse = DrawObject("IMAGES\\MOUSE.SPR", 0, 0, true);
 
 	palette.blackout_palette();
 	palette.fade_in();
@@ -51,10 +53,7 @@ int main()
 	unsigned long long game_time = Timer::get_time();
 	double delta_time = 0;
 
-	Speaker::play_music("DATA\\EFFECT.SFX");
-
 	bool click_event = false;
-
 	unsigned int lastmousedownx = 0;
 	unsigned int lastmousedowny = 0;
 	unsigned int lastmouseupx = 0;
@@ -74,27 +73,17 @@ int main()
 
 		screen.draw_background(background.get_buffer());
 
-		Text::write_text_center((Keyboard::check_if_pressed(75)) ? "left press" : "no press", font, 20, screen, 50);
-		Text::write_text((Keyboard::check_if_pressed(77)) ? "right press" : "no press", font, 20, screen, 10, 80);
-
-		EA.draw(screen, 10, 120, false);
-		EB.draw(screen, 60, 120, false);
-		HK.draw(screen, 110, 120, false);
-		HZ.draw(screen, 160, 120, false);
+		EB.draw(screen);
 
 		char str[25];
 		sprintf(str, "FPS: %f\0", 1 / delta_time);
-		Text::write_text(str, font, 20, screen, 10, 110);
-
-		Draw::rect(screen, 10, 100, 50, 20, 20);
-		Draw::fillrect(screen, 10, 130, 50, 20, 20);
-		Draw::rect_round(screen, 100, 100, 50, 20, 20);
-		Draw::fillrect_round(screen, 100, 130, 50, 20, 20, 0x3);
+		Text::write_text(str, font, 20, screen, 10, 0);
 
 		if (mouse_installed)
 		{
 			mousestatus = Mouse::get_current_status();
-			mouse.draw(screen, mousestatus.coors.x, mousestatus.coors.y, true);
+			mouse.set_position(mousestatus.coors.x, mousestatus.coors.y);
+			mouse.draw(screen);
 		}
 
 		Mouse::MouseEvent mouseevent;
@@ -105,6 +94,8 @@ int main()
 			{
 				lastmousedownx = mouseevent.coors.x;
 				lastmousedowny = mouseevent.coors.y;
+				Speaker::play_sfx(soundeffect1, sizeof(soundeffect1) / sizeof(soundeffect1[0]));
+				Tween::add_tween(EB, 500, lastmousedownx, lastmousedowny, NULL);
 			}
 			else if (mouseevent.type == Mouse::left_mouse_up)
 			{
@@ -113,21 +104,19 @@ int main()
 			}
 		}
 
-		if (click_event)
-		{
-			Text::write_text("CLICK", font, 20, screen, 80, 180);
-			char debug[50] = {""};
-			sprintf(debug, "%d %d  %d %d  C: %d %d", lastmousedownx, lastmousedowny, lastmouseupx, lastmouseupy, mousestatus.coors.x, mousestatus.coors.y);
-			Text::write_text_center(debug, font, 20, screen, 20);
-		}
-
 		screen.draw_screen_buffer();
+
+		Tween::handle_tweens(delta_time);
 	}
+
+	if (Adlib::check_if_adlib_present())
+		Adlib::reset_card();
 
 	Keyboard::deinit_keyboard();
 	Timer::deinit_timer();
-	if (Adlib::check_if_adlib_present())
-		Adlib::reset_card();
+
+	palette.blackout_palette();
+	Screen::wait_retrace();
 
 	return 0;
 }

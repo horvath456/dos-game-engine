@@ -4,17 +4,18 @@
 #pragma once
 
 #include "screen.h"
+#include "sprite.h"
 
 class AnimationObject
 {
 public:
-    AnimationObject(const char *filename);
-    ~AnimationObject();
+    AnimationObject(Sprite *sprites[], unsigned int num_sprites, int x = 0, int y = 0);
 
-    void draw(Screen &screen, int x, int y);
+    void draw(Screen &screen);
 
     unsigned char far *get_buffer();
 
+    void set_position(int x, int y);
     void set_frame(unsigned int f);
 
     unsigned int frame;
@@ -22,9 +23,12 @@ public:
     unsigned int width;
     unsigned int height;
 
+    int x;
+    int y;
+
 private:
     unsigned int num_frames;
-    unsigned char far *buffer;
+    Sprite *frames[32];
 };
 
 #endif

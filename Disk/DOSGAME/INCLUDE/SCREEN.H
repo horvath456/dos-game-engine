@@ -17,7 +17,7 @@ public:
     void clear_screen_buffer();
 
     // x >= 0 && y >= 0 && x < SCREEN_WIDTH && y < SCREEN_HEIGHT
-    unsigned char *get_buffer(unsigned int x, unsigned int y);
+    unsigned char far *get_buffer(unsigned int x, unsigned int y);
 
     void draw_background(unsigned char *buf);
     void draw_background_color(unsigned char col);
@@ -33,8 +33,8 @@ public:
 private:
     static void set_screen_mode(unsigned char mode);
 
-    unsigned char *screen_memory;
-    unsigned char *screen_buffer;
+    unsigned char far *screen_memory;
+    unsigned char far *screen_buffer;
 };
 
-#endif
+#endif // SCREEN_H

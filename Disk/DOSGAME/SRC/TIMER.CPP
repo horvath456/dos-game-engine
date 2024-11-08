@@ -71,6 +71,10 @@ namespace Timer
 
     void set_timer(int frate)
     {
+        _asm {
+            pushf
+            cli
+        }
         clock_ticks = 0;
         counter = 0x1234DD / frate;
         old_handler = _dos_getvect(TIMEINT);
@@ -78,14 +82,24 @@ namespace Timer
         outp(0x43, 0x34);
         outp(0x40, counter % 256);
         outp(0x40, counter / 256);
+        _asm {
+           popf
+        }
     }
 
     void reset_timer()
     {
+        _asm {
+            pushf
+            cli
+        }
         outp(0x43, 0x34);
         outp(0x40, 0);
         outp(0x40, 0);
         _dos_setvect(TIMEINT, old_handler);
+        _asm {
+           popf
+        }
     }
 
     unsigned long long get_time()

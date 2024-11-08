@@ -2,61 +2,54 @@
 
 #include <fstream>
 #include "screen.h"
-#include "drawobj.h"
+#include "sprite.h"
 
-AnimationObject::AnimationObject(const char *filename)
+AnimationObject::AnimationObject(Sprite *sprites[], unsigned int num_sprites, int x, int y)
 {
     frame = 0;
 
-    std::fstream infile(filename, std::ios::in | std::ios::binary);
-
-    unsigned char buf[6];
-
-    infile.get(buf[0]);
-    infile.get(buf[1]);
-    infile.get(buf[2]);
-    infile.get(buf[3]);
-    infile.get(buf[4]);
-    infile.get(buf[5]);
-
-    num_frames = (buf[0] << 8) + buf[1];
-    width = (buf[2] << 8) + buf[3];
-    height = (buf[4] << 8) + buf[5];
-
-    buffer = new unsigned char[(unsigned int)(num_frames * width * height)];
-
-    for (unsigned int i = 0; i < num_frames * width * height; i++)
+    num_frames = num_sprites;
+    if (num_frames > 32)
     {
-        unsigned char c;
-        infile.get(c);
-        this->buffer[i] = c;
+        num_frames = 32;
     }
-}
 
-AnimationObject::~AnimationObject()
-{
-    delete[] buffer;
+    width = sprites[0]->width;
+    height = sprites[0]->height;
+
+    for (unsigned int i = 0; i < num_frames; i++)
+    {
+        frames[i] = sprites[i];
+    }
+
+    this->x = x;
+    this->y = y;
 }
 
 unsigned char far *AnimationObject::get_buffer()
 {
-    return buffer + (frame * (width * height));
+    return frames[frame]->get_buffer();
 }
 
-void AnimationObject::set_frame(unsigned int f)  {
-    if (f < num_frames) {
-        frame = f;
-    }
+void AnimationObject::set_frame(unsigned int f)
+{
+    frame = f % num_frames;
 }
 
-void AnimationObject::draw(Screen &screen, int x, int y)
+void AnimationObject::set_position(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+}
+
+void AnimationObject::draw(Screen &screen)
 {
     if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
         return;
     if (x <= ((int)width * (-1)) || y <= ((int)height * (-1)))
         return;
 
-    unsigned char far *buf = buffer + (frame * (width * height));
+    unsigned char far *buf = get_buffer();
 
     unsigned int w = width;
     unsigned int h = height;
@@ -113,6 +106,6 @@ void AnimationObject::draw(Screen &screen, int x, int y)
         dec dx
         jnz height_loop_1
         pop ds 
-        pop es 
+        pop es
     }
 }

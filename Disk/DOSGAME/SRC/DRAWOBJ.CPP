@@ -3,8 +3,9 @@
 #include <fstream>
 #include <iostream.h>
 #include "screen.h"
+#include "sprite.h"
 
-void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
+void DrawObject::draw(Screen &screen)
 {
     if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
         return;
@@ -115,18 +116,34 @@ void DrawObject::draw(Screen &screen, int x, int y, bool transparent)
     }
 }
 
+void DrawObject::set_position(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+}
+
 unsigned char DrawObject::pixel_at(unsigned int x, unsigned int y)
 {
     return buffer[y * width + x];
 }
 
-DrawObject::~DrawObject()
+DrawObject::DrawObject(Sprite &sprite, int x, int y, bool transparent)
 {
-    delete[] buffer;
+    this->transparent = transparent;
+    width = sprite.width;
+    height = sprite.height;
+    buffer = sprite.get_buffer();
+    loaded_from_file = false;
+    this->x = x;
+    this->y = y;
 }
 
-DrawObject::DrawObject(const char *filename)
+DrawObject::DrawObject(const char *filename, int x, int y, bool transparent)
 {
+    this->transparent = transparent;
+    this->x = x;
+    this->y = y;
+
     std::fstream infile(filename, std::ios::in | std::ios::binary);
 
     unsigned char buf[4];
@@ -145,6 +162,7 @@ DrawObject::DrawObject(const char *filename)
         width = 320;
 
     buffer = new unsigned char[(unsigned int)(width * height)];
+    loaded_from_file = true;
 
     for (unsigned int i = 0; i < width * height; i++)
     {
@@ -152,6 +170,12 @@ DrawObject::DrawObject(const char *filename)
         infile.get(c);
         buffer[i] = c;
     }
+}
+
+DrawObject::~DrawObject()
+{
+    if (loaded_from_file)
+        delete[] buffer;
 }
 
 unsigned char far *DrawObject::get_buffer()
