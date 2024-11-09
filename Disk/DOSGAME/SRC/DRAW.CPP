@@ -1,6 +1,7 @@
 #include "draw.h"
 
 #include "screen.h"
+#include "sprite.h"
 #include <cstdint>
 
 namespace Draw
@@ -124,4 +125,121 @@ namespace Draw
             screenbuf += Screen::HPIXELS - width;
         }
     }
+
+    void draw_sprite(Screen &screen, Sprite &sprite, int x, int y, bool transparent)
+    {
+        draw_sprite_buffer(screen, sprite.get_buffer(), x, y, sprite.width, sprite.height, transparent);
+    }
+
+    void draw_sprite_buffer(Screen &screen, unsigned char far *buffer, int x, int y, unsigned int width, unsigned int height, bool transparent)
+    {
+        if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
+            return;
+        if (x <= ((int)width * (-1)) || y <= ((int)height * (-1)))
+            return;
+
+        unsigned char far *buf = buffer;
+
+        unsigned int w = width;
+        unsigned int h = height;
+
+        unsigned int si_add_after = 0;
+        unsigned int si_add_before = 0;
+
+        if (x + (int)width >= SCREEN_WIDTH)
+        {
+            w += (SCREEN_WIDTH - x - (int)width);
+            si_add_after = width - w;
+        }
+        if (y + (int)height >= SCREEN_HEIGHT)
+        {
+            h += (SCREEN_HEIGHT - y - (int)height);
+        }
+        if (x < 0)
+        {
+            w += x;
+            x = 0;
+            si_add_before = width - w;
+        }
+        if (y < 0)
+        {
+            h += y;
+            y = 0;
+            buf += width * (height - h);
+        }
+
+        unsigned int add_w = SCREEN_WIDTH - w;
+        unsigned char far *screenbuf = screen.get_buffer(x, y);
+
+        _asm {
+        push es 
+        push ds
+        }
+
+        if (transparent)
+        {
+            _asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
+        height_loop_1:
+            add si, si_add_before
+            mov cx, w
+        width_loop_1:
+            lodsb
+            cmp al, 0xFF
+            je cont_loop_1
+            stosb
+            dec di
+        cont_loop_1:
+            inc di
+            dec cx
+            jnz width_loop_1
+            add si, si_add_after
+            add di, add_w
+            dec dx
+            jnz height_loop_1
+            }
+        }
+        else if (w % 4 == 0)
+        {
+            w >>= 2;
+            _asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
+        height_loop_2:
+            add si, si_add_before
+            xor ecx, ecx
+            mov cx, w
+            rep movsd
+            add si, si_add_after
+            add di, add_w
+            dec dx
+            jnz height_loop_2
+            }
+        }
+        else
+        {
+            _asm {
+            mov dx, h
+            lds si, [buf]
+            les di, [screenbuf]
+        height_loop_2:
+            add si, si_add_before
+            mov cx, w
+            rep movsb
+            add si, si_add_after
+            add di, add_w
+            dec dx
+            jnz height_loop_2
+            }
+        }
+
+        _asm {
+        pop ds 
+        pop es
+        }
+    }
+
 } // namespace Draw
