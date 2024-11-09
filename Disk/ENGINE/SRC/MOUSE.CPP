@@ -27,8 +27,8 @@ namespace Engine
 
             unsigned int status = 0x0000;
 
-            unsigned int screenw = Engine::Screen::SCREEN_WIDTH;
-            unsigned int screenh = Engine::Screen::SCREEN_HEIGHT;
+            unsigned int screenw = Engine::Screen::SCREEN_WIDTH - 1;
+            unsigned int screenh = Engine::Screen::SCREEN_HEIGHT - 1;
 
             _asm {
             xor ax, ax
@@ -42,11 +42,11 @@ namespace Engine
             _asm {
             mov ax, 0x0007
             xor cx, cx
-            mov dx, screenw - 1
+            mov dx, screenw
             int 0x33
             mov ax, 0x0008
             xor cx, cx
-            mov dx, screenh - 1
+            mov dx, screenh
             int 0x33
             }
 

@@ -10,7 +10,7 @@ mkdir build
 cd build
 del main.obj
 del main.exe
-wpp -4 -fp5 -ml -xs -obehi+l+mrt -zq ..\src\main.cpp
+wpp -4 -fp2 -ml -xs -obehi+l+mrt -zq ..\src\main.cpp
 wlink @..\proj.lnk
 cd ..
 copy build\main.exe main.exe

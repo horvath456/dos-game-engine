@@ -73,8 +73,8 @@ namespace Engine
         {
             clock_ticks = 0;
             counter = 0x1234DD / frate;
-            old_handler = _dos_getvect(0x0);
-            _dos_setvect(0x0, new_handler);
+            old_handler = _dos_getvect(0x8); // 0x8 is the address of the timer interrupt
+            _dos_setvect(0x8, new_handler);
             outp(0x43, 0x34);
             outp(0x40, counter % 256);
             outp(0x40, counter / 256);
@@ -85,7 +85,7 @@ namespace Engine
             outp(0x43, 0x34);
             outp(0x40, 0);
             outp(0x40, 0);
-            _dos_setvect(0x0, old_handler);
+            _dos_setvect(0x8, old_handler);
         }
 
         unsigned long long get_time()
